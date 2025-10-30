@@ -9,6 +9,7 @@ import axios, {
   AxiosError,
   AxiosRequestConfig,
 } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_CONFIG } from "./config";
 import type { ApiResponse } from "./types";
 
@@ -40,14 +41,15 @@ class ApiClient {
   private setupInterceptors() {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
-      (config) => {
-        // Add accessToken  nếu có
-        const token =
-          typeof window !== "undefined"
-            ? localStorage.getItem("accessToken")
-            : null;
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+      async (config) => {
+        // Add accessToken  nếu có (React Native sử dụng AsyncStorage)
+        try {
+          const token = await AsyncStorage.getItem("accessToken");
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+        } catch (error) {
+          console.error("Error getting token from storage:", error);
         }
 
         // If sending FormData, remove Content-Type header
@@ -78,18 +80,20 @@ class ApiClient {
         console.log(`✅ API Response: ${response.status}`, response.data);
         return response;
       },
-      (error: AxiosError) => {
+      async (error: AxiosError) => {
         console.error(
           `❌ API Error: ${error.response?.status}`,
           error.response?.data
         );
 
-        // Handle 401 Unauthorized
+        // Handle 401 Unauthorized (React Native)
         if (error.response?.status === 401) {
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("user");
-            window.location.href = "/signin";
+          try {
+            await AsyncStorage.removeItem("accessToken");
+            await AsyncStorage.removeItem("user");
+            // Note: Navigation should be handled in auth-context, not here
+          } catch (storageError) {
+            console.error("Error clearing storage:", storageError);
           }
         }
 

@@ -7,7 +7,17 @@
  * Get API base URL based on environment
  */
 export function getApiBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
+  // Expo automatically loads EXPO_PUBLIC_* variables from .env file
+  // Available as process.env.EXPO_PUBLIC_*
+  const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
+
+  if (!apiUrl) {
+    console.warn("⚠️ EXPO_PUBLIC_API_BASE_URL not configured in .env file");
+    return "http://10.0.2.2:3000/api"; // Fallback for Android emulator
+  }
+
+  console.log("✅ API Base URL:", apiUrl);
+  return apiUrl;
 }
 
 /**

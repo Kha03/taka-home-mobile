@@ -24,14 +24,6 @@ export class AuthService {
     // Tự động set token vào client nếu login thành công
     if (response.code === 200 && response.data?.accessToken) {
       apiClient.setAuthToken(response.data.accessToken);
-      // Lưu token và account info vào localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem(
-          "account_info",
-          JSON.stringify(response.data.account)
-        );
-      }
     }
 
     return response;
@@ -57,21 +49,13 @@ export class AuthService {
     try {
       const response = await apiClient.post<void>("/auth/logout");
 
-      // Xóa token khỏi client và localStorage
+      // Xóa token khỏi client
       apiClient.removeAuthToken();
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("account_info");
-      }
 
       return response;
     } catch (error) {
       // Vẫn xóa token local dù API call fail
       apiClient.removeAuthToken();
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("account_info");
-      }
       throw error;
     }
   }
@@ -125,30 +109,17 @@ export class AuthService {
   async refreshToken(
     refreshToken?: string
   ): Promise<ApiResponse<AuthResponse>> {
-    const token =
-      refreshToken ||
-      (typeof window !== "undefined"
-        ? localStorage.getItem("refresh_token")
-        : null);
-
-    if (!token) {
+    if (!refreshToken) {
       throw new Error("No refresh token available");
     }
 
     const response = await apiClient.post<AuthResponse>("/auth/refresh", {
-      refreshToken: token,
+      refreshToken: refreshToken,
     });
 
     // Cập nhật token mới
     if (response.code === 200 && response.data?.accessToken) {
       apiClient.setAuthToken(response.data.accessToken);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem(
-          "account_info",
-          JSON.stringify(response.data.account)
-        );
-      }
     }
 
     return response;
@@ -169,25 +140,33 @@ export class AuthService {
   }
 
   /**
-   * Khởi tạo token từ localStorage (khi reload trang)
+   * Khởi tạo token từ AsyncStorage (khi reload app)
    */
-  initializeAuth(): void {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
+  async initializeAuth(): Promise<void> {
+    try {
+      const AsyncStorage =
+        require("@react-native-async-storage/async-storage").default;
+      const token = await AsyncStorage.getItem("accessToken");
       if (token) {
         apiClient.setAuthToken(token);
       }
+    } catch (error) {
+      console.error("Initialize auth error:", error);
     }
   }
 
   /**
    * Kiểm tra xem user có đang đăng nhập không
    */
-  isAuthenticated(): boolean {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("accessToken");
+  async isAuthenticated(): Promise<boolean> {
+    try {
+      const AsyncStorage =
+        require("@react-native-async-storage/async-storage").default;
+      const token = await AsyncStorage.getItem("accessToken");
+      return !!token;
+    } catch (error) {
+      return false;
     }
-    return false;
   }
 }
 

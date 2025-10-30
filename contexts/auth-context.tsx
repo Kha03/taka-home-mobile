@@ -37,16 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const token = await AsyncStorage.getItem("accessToken");
         if (savedUser && token) {
           setUser(JSON.parse(savedUser));
-          // Cookie cho middleware
-          document.cookie = `accessToken=${token}; path=/; max-age=${
-            7 * 24 * 60 * 60
-          }`;
         }
       } catch {
         await AsyncStorage.removeItem("user");
         await AsyncStorage.removeItem("accessToken");
-        document.cookie =
-          "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
       } finally {
         setIsLoading(false);
       }
@@ -80,11 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
 
         // Store token and user data
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("accessToken", accessToken);
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=${
-          7 * 24 * 60 * 60
-        }`;
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        await AsyncStorage.setItem("accessToken", accessToken);
 
         setUser(user);
         afterAuthRedirect();
@@ -148,9 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Store token and user data
           await AsyncStorage.setItem("user", JSON.stringify(user));
           await AsyncStorage.setItem("accessToken", accessToken);
-          document.cookie = `accessToken=${accessToken}; path=/; max-age=${
-            7 * 24 * 60 * 60
-          }`;
 
           setUser(user);
           afterAuthRedirect();
@@ -187,8 +175,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Clear local storage and state
       await AsyncStorage.removeItem("user");
       await AsyncStorage.removeItem("accessToken");
-      document.cookie =
-        "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
       setUser(null);
       router.replace("/(auth)/signin");
     }
@@ -215,10 +201,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Store token and user data (using same keys as normal login)
       await AsyncStorage.setItem("user", JSON.stringify(user));
-      await AsyncStorage.setItem("accessToken", token); // For compatibility
-      document.cookie = `accessToken=${token}; path=/; max-age=${
-        7 * 24 * 60 * 60
-      }`;
+      await AsyncStorage.setItem("accessToken", token);
 
       setUser(user);
       return { success: true };
