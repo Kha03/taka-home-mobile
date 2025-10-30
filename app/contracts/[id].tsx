@@ -17,6 +17,7 @@ import { contractService } from "@/lib/api";
 import { bookingToContract } from "@/lib/contracts/mappers";
 import type { ContractVM, ContractStatus } from "@/types/contracts";
 import { useAuth } from "@/contexts/auth-context";
+import { InvoicePaymentModal } from "@/components/contracts";
 
 export default function ContractDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,6 +28,8 @@ export default function ContractDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string>("");
 
   const userRole = user?.roles || "TENANT";
 
@@ -101,6 +104,16 @@ export default function ContractDetailScreen() {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const handleInvoicePress = (invoiceId: string) => {
+    setSelectedInvoiceId(invoiceId);
+    setPaymentModalVisible(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    // Reload contract detail to refresh invoice status
+    loadContractDetail();
   };
 
   const formatCurrency = (amount: number) => {
@@ -299,7 +312,12 @@ export default function ContractDetailScreen() {
           📄 Hóa đơn thanh toán ({contract.invoices.length})
         </Text>
         {contract.invoices.map((invoice) => (
-          <View key={invoice.id} style={styles.invoiceCard}>
+          <TouchableOpacity
+            key={invoice.id}
+            style={styles.invoiceCard}
+            onPress={() => handleInvoicePress(invoice.invoiceId)}
+            activeOpacity={0.7}
+          >
             <View style={styles.invoiceHeader}>
               <Text style={styles.invoiceTitle}>Hóa đơn {invoice.month}</Text>
               <View
@@ -339,20 +357,18 @@ export default function ContractDetailScreen() {
             <Text style={styles.invoiceDueDate}>
               Hạn thanh toán: {invoice.dueDate}
             </Text>
-            {invoice.status !== "PAID" && userRole[0] === "TENANT" && (
-              <TouchableOpacity
-                style={[
-                  styles.actionButton,
-                  styles.primaryButton,
-                  { marginTop: 8 },
-                ]}
-                onPress={() => console.log("Pay invoice", invoice.invoiceId)}
-              >
-                <MaterialIcons name="payment" size={20} color="#FFF" />
-                <Text style={styles.primaryButtonText}>Thanh toán</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+            <View style={styles.invoiceActions}>
+              <View style={styles.invoiceActionText}>
+                <MaterialIcons name="touch-app" size={16} color="#2196F3" />
+                <Text style={styles.tapToViewText}>
+                  {invoice.status === "PAID"
+                    ? "Nhấp để xem chi tiết"
+                    : "Nhấp để thanh toán"}
+                </Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color="#2196F3" />
+            </View>
+          </TouchableOpacity>
         ))}
       </View>
     );
@@ -387,119 +403,129 @@ export default function ContractDetailScreen() {
   const statusConfig = getStatusConfig(contract.status);
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <MaterialIcons name="arrow-back" size={24} color="#212121" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
-      </View>
-
-      {/* Contract Header */}
-      <View style={styles.contractHeader}>
-        <Text style={styles.contractCode}>
-          {contract.contractCode || contract.contractId || contract.id}
-        </Text>
-        <View
-          style={[
-            styles.statusBadge,
-            { backgroundColor: statusConfig.color + "20" },
-          ]}
-        >
-          <MaterialIcons
-            name={statusConfig.icon}
-            size={16}
-            color={statusConfig.color}
-          />
-          <Text style={[styles.statusText, { color: statusConfig.color }]}>
-            {statusConfig.label}
-          </Text>
+    <>
+      <ScrollView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#212121" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
         </View>
-        <Text style={styles.contractType}>{contract.type}</Text>
-        <View style={styles.partiesContainer}>
-          <View style={styles.partyRow}>
-            <MaterialIcons name="person" size={20} color="#666" />
-            <Text style={styles.partyLabel}>Người thuê:</Text>
-            <Text style={styles.partyValue}>{contract.tenant}</Text>
-          </View>
-          <View style={styles.partyRow}>
-            <MaterialIcons name="business" size={20} color="#666" />
-            <Text style={styles.partyLabel}>Chủ nhà:</Text>
-            <Text style={styles.partyValue}>{contract.landlord}</Text>
-          </View>
-        </View>
-      </View>
 
-      {/* Contract Info */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Thông tin hợp đồng</Text>
-        <View style={styles.infoCard}>
-          <View style={styles.infoRow}>
-            <MaterialIcons name="date-range" size={20} color="#666" />
-            <Text style={styles.infoLabel}>Thời hạn:</Text>
-          </View>
-          <Text style={styles.infoValue}>
-            {contract.startDate
-              ? new Date(contract.startDate).toLocaleDateString("vi-VN")
-              : "Chưa xác định"}{" "}
-            -{" "}
-            {contract.endDate
-              ? new Date(contract.endDate).toLocaleDateString("vi-VN")
-              : "Chưa xác định"}
+        {/* Contract Header */}
+        <View style={styles.contractHeader}>
+          <Text style={styles.contractCode}>
+            {contract.contractCode || contract.contractId || contract.id}
           </Text>
-
-          <View style={styles.infoRow}>
-            <MaterialIcons name="location-on" size={20} color="#666" />
-            <Text style={styles.infoLabel}>Địa chỉ:</Text>
-          </View>
-          <Text style={styles.infoValue}>{contract.address}</Text>
-
-          <View style={styles.infoRow}>
-            <MaterialIcons name="home" size={20} color="#666" />
-            <Text style={styles.infoLabel}>Mã phòng:</Text>
-            <Text style={styles.infoValue}>{contract.propertyCode}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <MaterialIcons name="category" size={20} color="#666" />
-            <Text style={styles.infoLabel}>Loại:</Text>
-            <Text style={styles.infoValue}>{contract.category}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
-            <Text style={styles.infoLabel}>Giá thuê:</Text>
-            <Text style={[styles.infoValue, styles.priceText]}>
-              {formatCurrency(contract.price)}/tháng
-            </Text>
-          </View>
-
-          <View style={styles.infoRow}>
+          <View
+            style={[
+              styles.statusBadge,
+              { backgroundColor: statusConfig.color + "20" },
+            ]}
+          >
             <MaterialIcons
-              name="account-balance-wallet"
-              size={20}
-              color="#2196F3"
+              name={statusConfig.icon}
+              size={16}
+              color={statusConfig.color}
             />
-            <Text style={styles.infoLabel}>Tiền cọc:</Text>
-            <Text style={[styles.infoValue, styles.depositText]}>
-              {formatCurrency(contract.deposit)}
+            <Text style={[styles.statusText, { color: statusConfig.color }]}>
+              {statusConfig.label}
             </Text>
           </View>
+          <Text style={styles.contractType}>{contract.type}</Text>
+          <View style={styles.partiesContainer}>
+            <View style={styles.partyRow}>
+              <MaterialIcons name="person" size={20} color="#666" />
+              <Text style={styles.partyLabel}>Người thuê:</Text>
+              <Text style={styles.partyValue}>{contract.tenant}</Text>
+            </View>
+            <View style={styles.partyRow}>
+              <MaterialIcons name="business" size={20} color="#666" />
+              <Text style={styles.partyLabel}>Chủ nhà:</Text>
+              <Text style={styles.partyValue}>{contract.landlord}</Text>
+            </View>
+          </View>
         </View>
-      </View>
 
-      {/* Status Info */}
-      {renderStatusInfo()}
+        {/* Contract Info */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Thông tin hợp đồng</Text>
+          <View style={styles.infoCard}>
+            <View style={styles.infoRow}>
+              <MaterialIcons name="date-range" size={20} color="#666" />
+              <Text style={styles.infoLabel}>Thời hạn:</Text>
+            </View>
+            <Text style={styles.infoValue}>
+              {contract.startDate
+                ? new Date(contract.startDate).toLocaleDateString("vi-VN")
+                : "Chưa xác định"}{" "}
+              -{" "}
+              {contract.endDate
+                ? new Date(contract.endDate).toLocaleDateString("vi-VN")
+                : "Chưa xác định"}
+            </Text>
 
-      {/* Invoices */}
-      {renderInvoices()}
+            <View style={styles.infoRow}>
+              <MaterialIcons name="location-on" size={20} color="#666" />
+              <Text style={styles.infoLabel}>Địa chỉ:</Text>
+            </View>
+            <Text style={styles.infoValue}>{contract.address}</Text>
 
-      <View style={{ height: 40 }} />
-    </ScrollView>
+            <View style={styles.infoRow}>
+              <MaterialIcons name="home" size={20} color="#666" />
+              <Text style={styles.infoLabel}>Mã phòng:</Text>
+              <Text style={styles.infoValue}>{contract.propertyCode}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <MaterialIcons name="category" size={20} color="#666" />
+              <Text style={styles.infoLabel}>Loại:</Text>
+              <Text style={styles.infoValue}>{contract.category}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
+              <Text style={styles.infoLabel}>Giá thuê:</Text>
+              <Text style={[styles.infoValue, styles.priceText]}>
+                {formatCurrency(contract.price)}/tháng
+              </Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <MaterialIcons
+                name="account-balance-wallet"
+                size={20}
+                color="#2196F3"
+              />
+              <Text style={styles.infoLabel}>Tiền cọc:</Text>
+              <Text style={[styles.infoValue, styles.depositText]}>
+                {formatCurrency(contract.deposit)}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Status Info */}
+        {renderStatusInfo()}
+
+        {/* Invoices */}
+        {renderInvoices()}
+
+        <View style={{ height: 40 }} />
+      </ScrollView>
+
+      {/* Invoice Payment Modal */}
+      <InvoicePaymentModal
+        visible={paymentModalVisible}
+        onClose={() => setPaymentModalVisible(false)}
+        invoiceId={selectedInvoiceId}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
+    </>
   );
 }
 
@@ -690,6 +716,23 @@ const styles = StyleSheet.create({
   invoiceDueDate: {
     fontSize: 13,
     color: "#666",
+    marginBottom: 8,
+  },
+  invoiceActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  invoiceActionText: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  tapToViewText: {
+    fontSize: 13,
+    color: "#2196F3",
+    fontWeight: "500",
   },
   loadingText: {
     marginTop: 16,
