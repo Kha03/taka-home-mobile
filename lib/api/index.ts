@@ -18,6 +18,7 @@ export {
   VietnamAddressService,
 } from "./services/vietnam-address";
 export { bookingService, BookingService } from "./services/booking";
+export { contractService, ContractService } from "./services/contract";
 
 /**
  * Helper function để handle API errors một cách consistent
