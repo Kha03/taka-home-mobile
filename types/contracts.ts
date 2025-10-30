@@ -6,6 +6,15 @@ export interface ContractInvoice {
   status: "PAID" | "PENDING" | "OVERDUE";
 }
 
+export type ContractStatus =
+  | "active"
+  | "expired"
+  | "pending_signature"
+  | "pending_landlord"
+  | "awaiting_deposit"
+  | "awaiting_landlord_deposit"
+  | "ready_for_handover";
+
 export interface ContractVM {
   id: string;
   bookingId: string;

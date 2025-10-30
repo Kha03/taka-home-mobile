@@ -19,6 +19,7 @@ export {
 } from "./services/vietnam-address";
 export { bookingService, BookingService } from "./services/booking";
 export { contractService, ContractService } from "./services/contract";
+export { invoiceService, InvoiceService } from "./services/invoice";
 
 /**
  * Helper function để handle API errors một cách consistent

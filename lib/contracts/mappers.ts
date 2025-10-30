@@ -56,12 +56,8 @@ export const bookingToContract = (booking: Booking): ContractVM => {
     type: "Hợp đồng thuê nhà",
     tenant: booking.tenant.fullName,
     landlord: property.landlord.fullName,
-    startDate: booking.contract?.startDate
-      ? new Date(booking.contract.startDate).toLocaleDateString("vi-VN")
-      : "Chưa xác định",
-    endDate: booking.contract?.endDate
-      ? new Date(booking.contract.endDate).toLocaleDateString("vi-VN")
-      : "Chưa xác định",
+    startDate: booking.contract?.startDate || "",
+    endDate: booking.contract?.endDate || "",
     address: `${property.address}, ${property.ward}, ${property.province}`,
     propertyCode,
     propertyType: furnishing,
