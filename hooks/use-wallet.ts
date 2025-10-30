@@ -17,9 +17,11 @@ export interface UseWalletOptions {
 
 export interface UseWalletReturn {
   wallet: WalletResponse | null;
+  balance: number;
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  refreshBalance: () => Promise<void>;
   formatBalance: (balance: number) => string;
 }
 
@@ -82,9 +84,11 @@ export function useWallet(options: UseWalletOptions = {}): UseWalletReturn {
 
   return {
     wallet,
+    balance: wallet?.availableBalance || 0,
     loading,
     error,
     refetch: fetchWallet,
+    refreshBalance: fetchWallet,
     formatBalance,
   };
 }

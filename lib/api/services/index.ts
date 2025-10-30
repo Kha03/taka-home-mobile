@@ -14,3 +14,4 @@ export { notificationService, NotificationService } from "./notification";
 export { chatbotService } from "./chatbot";
 export { contractService, ContractService } from "./contract";
 export { statisticsService, StatisticsService } from "./statistics";
+export { paymentService, PaymentService } from "./payment";

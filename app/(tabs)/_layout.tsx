@@ -45,11 +45,11 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Contract History - Lịch sử hợp đồng blockchain */}
+      {/* Contract History - Lịch sử hợp đồng */}
       <Tabs.Screen
         name="contract-history"
         options={{
-          title: "LS Hợp đồng",
+          title: "Lịch sử",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="history" size={size} color={color} />
           ),

@@ -34,9 +34,9 @@ export default function ProfileScreen() {
       id: "wallet",
       icon: "account-balance-wallet",
       title: "Ví của tôi",
-      subtitle: "Quản lý số dư và giao dịch",
+      subtitle: "Quản lý số dù và giao dịch",
       onPress: () => {
-        // TODO: Navigate to wallet screen
+        router.push("/wallet");
       },
     },
     {
