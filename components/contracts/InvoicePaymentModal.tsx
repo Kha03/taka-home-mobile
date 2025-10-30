@@ -302,7 +302,6 @@ export function InvoicePaymentModal({
                           <Text style={styles.itemDescription}>
                             {item.description}
                           </Text>
-                          <Text style={styles.itemId}>ID: {item.id}</Text>
                         </View>
                       </View>
                       <View style={styles.itemRight}>
@@ -329,7 +328,7 @@ export function InvoicePaymentModal({
                   )}
 
                   <View style={styles.totalRow}>
-                    <Text style={styles.totalLabel}>💰 Tổng thanh toán:</Text>
+                    <Text style={styles.totalLabel}>Tổng thanh toán:</Text>
                     <Text style={styles.totalAmount}>
                       {formatCurrency(invoice.totalAmount)}
                     </Text>
@@ -459,10 +458,7 @@ export function InvoicePaymentModal({
                   <ActivityIndicator size="small" color="#FFF" />
                 ) : (
                   <>
-                    <MaterialIcons name="payment" size={20} color="#FFF" />
-                    <Text style={styles.payButtonText}>
-                      Thanh toán {formatCurrency(invoice.totalAmount)}
-                    </Text>
+                    <Text style={styles.payButtonText}>Thanh toán</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -643,7 +639,7 @@ const styles = StyleSheet.create({
     borderColor: "#2196F3",
   },
   totalLabel: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#1976D2",
   },

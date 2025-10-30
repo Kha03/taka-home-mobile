@@ -16,6 +16,7 @@
     "@rneui/themed": "^4.0.0-rc.7",
     "axios": "^1.13.1",
     "expo": "~54.0.20",
+    "expo-clipboard": "~8.0.7",
     "expo-constants": "~18.0.10",
     "expo-linking": "~8.0.8",
     "expo-router": "~6.0.14",

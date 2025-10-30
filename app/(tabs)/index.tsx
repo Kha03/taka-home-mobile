@@ -10,6 +10,7 @@ import {
   ScrollView,
   RefreshControl,
   TextInput,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -659,7 +660,7 @@ export default function PropertiesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Tìm kiếm nhà trọ</Text>
@@ -675,131 +676,137 @@ export default function PropertiesScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputWrapper}>
-          <MaterialIcons
-            name="search"
-            size={20}
-            color="#999"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm kiếm theo tên, địa chỉ..."
-            placeholderTextColor="#999"
-            value={searchInput}
-            onChangeText={setSearchInput}
-            onSubmitEditing={handleSearch}
-            returnKeyType="search"
-          />
-          {searchInput.length > 0 && (
-            <TouchableOpacity
-              onPress={clearSearch}
-              style={styles.searchClearButton}
-            >
-              <MaterialIcons name="close" size={18} color="#999" />
-            </TouchableOpacity>
-          )}
-        </View>
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Text style={styles.searchButtonText}>Tìm</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Active Search/Filter Indicator */}
-      {(searchQuery ||
-        Object.values(appliedFilters).some((v) => v !== undefined)) && (
-        <View style={styles.activeFiltersBar}>
-          {searchQuery && (
-            <View style={styles.activeFilterChip}>
-              <MaterialIcons name="search" size={14} color="#007AFF" />
-              <Text style={styles.activeFilterText} numberOfLines={1}>
-                {searchQuery}
-              </Text>
-              <TouchableOpacity onPress={clearSearch}>
-                <MaterialIcons name="close" size={14} color="#007AFF" />
-              </TouchableOpacity>
-            </View>
-          )}
-          {Object.values(appliedFilters).some((v) => v !== undefined) && (
-            <TouchableOpacity
-              style={styles.clearAllButton}
-              onPress={() => {
-                clearFilters();
-                clearSearch();
-              }}
-            >
-              <Text style={styles.clearAllText}>Xóa tất cả</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-
-      {/* Filter Panel */}
-      {showFilters && renderFilterSection()}
-
-      {/* Properties List */}
-      <FlatList
-        data={properties}
-        renderItem={renderPropertyCard}
-        keyExtractor={(item, index) => `${getDisplayId(item)}-${index}`}
-        contentContainerStyle={styles.listContent}
-        numColumns={2}
-        columnWrapperStyle={styles.columnWrapper}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListFooterComponent={
-          properties.length > 0 && hasMore && !loading ? (
-            <View style={styles.loadMoreContainer}>
+      <View style={styles.container}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputWrapper}>
+            <MaterialIcons
+              name="search"
+              size={20}
+              color="#999"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Tìm kiếm theo tên, địa chỉ..."
+              placeholderTextColor="#999"
+              value={searchInput}
+              onChangeText={setSearchInput}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
+            />
+            {searchInput.length > 0 && (
               <TouchableOpacity
-                style={styles.loadMoreButton}
-                onPress={loadMore}
-                disabled={loadingMore}
+                onPress={clearSearch}
+                style={styles.searchClearButton}
               >
-                {loadingMore ? (
-                  <>
-                    <ActivityIndicator size="small" color="#007AFF" />
-                    <Text style={styles.loadMoreButtonText}>Đang tải...</Text>
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.loadMoreButtonText}>Xem thêm</Text>
-                    <Text style={styles.loadMoreHint}>
-                      (Trang {currentPage}/{totalPages})
-                    </Text>
-                  </>
-                )}
+                <MaterialIcons name="close" size={18} color="#999" />
               </TouchableOpacity>
-            </View>
-          ) : properties.length > 0 && !hasMore ? (
-            <View style={styles.loadMoreContainer}>
-              <Text style={styles.endOfListText}>
-                Đã hiển thị tất cả {properties.length} bất động sản
-              </Text>
-            </View>
-          ) : null
-        }
-        ListEmptyComponent={
-          !loading ? (
-            <View style={styles.emptyContainer}>
-              <MaterialIcons name="home" size={80} color="#ccc" />
-              <Text style={styles.emptyText}>
-                Không tìm thấy bất động sản nào
-              </Text>
-              <Text style={styles.emptySubtext}>
-                Thử thay đổi bộ lọc để xem thêm
-              </Text>
-            </View>
-          ) : null
-        }
-      />
-    </View>
+            )}
+          </View>
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+            <Text style={styles.searchButtonText}>Tìm</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Active Search/Filter Indicator */}
+        {(searchQuery ||
+          Object.values(appliedFilters).some((v) => v !== undefined)) && (
+          <View style={styles.activeFiltersBar}>
+            {searchQuery && (
+              <View style={styles.activeFilterChip}>
+                <MaterialIcons name="search" size={14} color="#007AFF" />
+                <Text style={styles.activeFilterText} numberOfLines={1}>
+                  {searchQuery}
+                </Text>
+                <TouchableOpacity onPress={clearSearch}>
+                  <MaterialIcons name="close" size={14} color="#007AFF" />
+                </TouchableOpacity>
+              </View>
+            )}
+            {Object.values(appliedFilters).some((v) => v !== undefined) && (
+              <TouchableOpacity
+                style={styles.clearAllButton}
+                onPress={() => {
+                  clearFilters();
+                  clearSearch();
+                }}
+              >
+                <Text style={styles.clearAllText}>Xóa tất cả</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {/* Filter Panel */}
+        {showFilters && renderFilterSection()}
+
+        {/* Properties List */}
+        <FlatList
+          data={properties}
+          renderItem={renderPropertyCard}
+          keyExtractor={(item, index) => `${getDisplayId(item)}-${index}`}
+          contentContainerStyle={styles.listContent}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListFooterComponent={
+            properties.length > 0 && hasMore && !loading ? (
+              <View style={styles.loadMoreContainer}>
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={loadMore}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? (
+                    <>
+                      <ActivityIndicator size="small" color="#007AFF" />
+                      <Text style={styles.loadMoreButtonText}>Đang tải...</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.loadMoreButtonText}>Xem thêm</Text>
+                      <Text style={styles.loadMoreHint}>
+                        (Trang {currentPage}/{totalPages})
+                      </Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : properties.length > 0 && !hasMore ? (
+              <View style={styles.loadMoreContainer}>
+                <Text style={styles.endOfListText}>
+                  Đã hiển thị tất cả {properties.length} bất động sản
+                </Text>
+              </View>
+            ) : null
+          }
+          ListEmptyComponent={
+            !loading ? (
+              <View style={styles.emptyContainer}>
+                <MaterialIcons name="home" size={80} color="#ccc" />
+                <Text style={styles.emptyText}>
+                  Không tìm thấy bất động sản nào
+                </Text>
+                <Text style={styles.emptySubtext}>
+                  Thử thay đổi bộ lọc để xem thêm
+                </Text>
+              </View>
+            ) : null
+          }
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -824,6 +831,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   headerTitle: {
     fontSize: 20,

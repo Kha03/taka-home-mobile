@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  SafeAreaView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -32,7 +33,59 @@ export default function ContractDetailScreen() {
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string>("");
 
   const userRole = user?.roles || "TENANT";
+  const [copyLoading, setCopyLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
+  const handleCopyContractCode = async () => {
+    if (!contract) {
+      return;
+    }
+
+    const code = contract.contractCode || contract.contractId || contract.id;
+    try {
+      setCopyLoading(true);
+      const clipboard = await import("expo-clipboard");
+      await clipboard.setStringAsync(code);
+      setCopied(true);
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+      Alert.alert("Lỗi", "Không thể sao chép mã hợp đồng");
+    } finally {
+      setCopyLoading(false);
+    }
+  };
+
+  /**
+   * CopyContractButton
+   * - Place <CopyContractButton /> next to the displayed contract code in the UI (e.g. inside the contractHeader).
+   */
+  const CopyContractButton = () => (
+    <TouchableOpacity
+      style={[styles.copyButton, copied && styles.copiedButton]}
+      onPress={handleCopyContractCode}
+      disabled={copyLoading || copied}
+      activeOpacity={0.7}
+    >
+      {copyLoading ? (
+        <ActivityIndicator size="small" color="#2196F3" />
+      ) : (
+        <>
+          <MaterialIcons
+            name={copied ? "check" : "content-copy"}
+            size={16}
+            color={copied ? "#4CAF50" : "#2196F3"}
+          />
+          <Text
+            style={[styles.copyButtonText, copied && styles.copiedButtonText]}
+          >
+            {copied ? "Đã sao chép" : "Sao chép"}
+          </Text>
+        </>
+      )}
+    </TouchableOpacity>
+  );
   useEffect(() => {
     if (id) {
       loadContractDetail();
@@ -403,24 +456,27 @@ export default function ContractDetailScreen() {
   const statusConfig = getStatusConfig(contract.status);
 
   return (
-    <>
-      <ScrollView style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <MaterialIcons name="arrow-back" size={24} color="#212121" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <MaterialIcons name="arrow-back" size={24} color="#212121" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
+      </View>
 
+      <ScrollView style={styles.container}>
         {/* Contract Header */}
         <View style={styles.contractHeader}>
-          <Text style={styles.contractCode}>
-            {contract.contractCode || contract.contractId || contract.id}
-          </Text>
+          <View style={styles.contractCodeRow}>
+            <Text style={styles.contractCode}>
+              {contract.contractCode || contract.contractId || contract.id}
+            </Text>
+            <CopyContractButton />
+          </View>
           <View
             style={[
               styles.statusBadge,
@@ -525,11 +581,15 @@ export default function ContractDetailScreen() {
         invoiceId={selectedInvoiceId}
         onPaymentSuccess={handlePaymentSuccess}
       />
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
@@ -544,10 +604,16 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   backButton: {
     marginRight: 16,
@@ -568,7 +634,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#212121",
+    flex: 1,
+  },
+  contractCodeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 8,
+  },
+  copyButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F8FF",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#2196F3",
+    gap: 4,
+  },
+  copiedButton: {
+    backgroundColor: "#E8F5E8",
+    borderColor: "#4CAF50",
+  },
+  copyButtonText: {
+    fontSize: 12,
+    color: "#2196F3",
+    fontWeight: "600",
+  },
+  copiedButtonText: {
+    color: "#4CAF50",
   },
   statusBadge: {
     flexDirection: "row",

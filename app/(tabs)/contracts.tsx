@@ -64,13 +64,13 @@ export default function ContractsScreen() {
     switch (status) {
       case "active":
         return {
-          label: "Đang hoạt động",
+          label: "Hoạt động",
           color: "#4CAF50",
           icon: "check-circle" as const,
         };
       case "expired":
         return {
-          label: "Đã kết thúc",
+          label: "Kết thúc",
           color: "#9E9E9E",
           icon: "history" as const,
         };
