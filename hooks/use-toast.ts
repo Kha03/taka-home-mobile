@@ -1,28 +1,37 @@
-import { toast as sonnerToast } from "sonner";
+import Toast from "react-native-toast-message";
+import { Alert } from "react-native";
 
 export const toast = {
   success: (message: string, description?: string) => {
-    sonnerToast.success(message, {
-      description,
-      duration: 4000,
+    Toast.show({
+      type: "success",
+      text1: message,
+      text2: description,
+      visibilityTime: 4000,
     });
   },
   error: (message: string, description?: string) => {
-    sonnerToast.error(message, {
-      description,
-      duration: 5000,
+    Toast.show({
+      type: "error",
+      text1: message,
+      text2: description,
+      visibilityTime: 5000,
     });
   },
   warning: (message: string, description?: string) => {
-    sonnerToast.warning(message, {
-      description,
-      duration: 4000,
+    Toast.show({
+      type: "info", // react-native-toast-message doesn't have warning, use info
+      text1: message,
+      text2: description,
+      visibilityTime: 4000,
     });
   },
   info: (message: string, description?: string) => {
-    sonnerToast.info(message, {
-      description,
-      duration: 4000,
+    Toast.show({
+      type: "info",
+      text1: message,
+      text2: description,
+      visibilityTime: 4000,
     });
   },
   promise: <T>(
@@ -37,11 +46,35 @@ export const toast = {
       error: string | ((error: Error) => string);
     }
   ) => {
-    return sonnerToast.promise(promise, {
-      loading,
-      success,
-      error,
+    // Show loading toast
+    Toast.show({
+      type: "info",
+      text1: loading,
+      visibilityTime: 0, // Don't auto hide
     });
+
+    return promise
+      .then((data) => {
+        Toast.hide();
+        const successMsg =
+          typeof success === "function" ? success(data) : success;
+        Toast.show({
+          type: "success",
+          text1: successMsg,
+          visibilityTime: 4000,
+        });
+        return data;
+      })
+      .catch((err) => {
+        Toast.hide();
+        const errorMsg = typeof error === "function" ? error(err) : error;
+        Toast.show({
+          type: "error",
+          text1: errorMsg,
+          visibilityTime: 5000,
+        });
+        throw err;
+      });
   },
   confirm: (
     message: string,
@@ -49,22 +82,18 @@ export const toast = {
     onConfirm: () => void,
     onCancel?: () => void
   ) => {
-    sonnerToast(message, {
-      description,
-      duration: Infinity,
-      action: {
-        label: "Xác nhận",
-        onClick: () => {
-          onConfirm();
-        },
+    // For confirm dialogs, still use Alert as Toast doesn't support interactive buttons
+    Alert.alert(message, description, [
+      {
+        text: "Hủy",
+        style: "cancel",
+        onPress: onCancel,
       },
-      cancel: {
-        label: "Hủy",
-        onClick: () => {
-          onCancel?.();
-        },
+      {
+        text: "Xác nhận",
+        onPress: onConfirm,
       },
-    });
+    ]);
   },
 };
 
