@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { Stack } from "expo-router";
 import Toast from "react-native-toast-message";
 import { CustomToast } from "@/components/ui/CustomToast";
+import { AuthGuard } from "../components/auth/AuthGuard";
 
 const toastConfig = {
   success: (props: any) => <CustomToast {...props} type="success" />,
@@ -17,12 +18,17 @@ export default function RootLayout() {
     <ThemeProvider>
       <AuthProvider>
         <ChatProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="properties" options={{ headerShown: false }} />
-            <Stack.Screen name="chat" options={{ headerShown: false }} />
-          </Stack>
+          <AuthGuard>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="properties"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="chat" options={{ headerShown: false }} />
+            </Stack>
+          </AuthGuard>
           <Toast config={toastConfig} />
         </ChatProvider>
       </AuthProvider>
