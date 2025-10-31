@@ -1,60 +1,75 @@
-import React, { useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 
 interface MapLocationProps {
-  mapLocation: string; // Format: 'latitude,longitude'
+  mapLocation: string; // Format: "latitude,longitude"
 }
 
+/**
+ * MapLocation Component
+ * Hiển thị bản đồ interactive với marker tại vị trí property
+ */
 export default function MapLocation({ mapLocation }: MapLocationProps) {
-  const mapContainer = useRef<View>(null);
-
-  useEffect(() => {
-    if (!mapLocation) return;
-
-    // Parse coordinates
+  const { coordinates, isValid } = useMemo(() => {
     const [latitude, longitude] = mapLocation
       .split(",")
       .map((coord) => parseFloat(coord.trim()));
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-      console.error("Invalid coordinates format");
-      return;
-    }
-
-    // For React Native, we would need to use react-native-maps
-    // For now, we'll show a placeholder
-    console.log("Map coordinates:", { latitude, longitude });
+    return {
+      coordinates: { latitude, longitude },
+      isValid: !isNaN(latitude) && !isNaN(longitude),
+    };
   }, [mapLocation]);
 
-  if (!mapLocation) {
+  if (!isValid) {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Ionicons name="location" size={16} color="#3b82f6" />
-          <Text style={styles.title}>Vị trí bất động sản trên bản đồ</Text>
-        </View>
-        <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>Không có thông tin vị trí</Text>
-        </View>
+      <View style={styles.errorContainer}>
+        <Ionicons name="warning" size={48} color="#f59e0b" />
+        <Text style={styles.errorTitle}>Tọa độ không hợp lệ</Text>
+        <Text style={styles.errorText}>Format cần: "latitude,longitude"</Text>
+        <Text style={styles.errorText}>Nhận được: {mapLocation}</Text>
       </View>
     );
   }
 
+  const { latitude, longitude } = coordinates;
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Ionicons name="location" size={16} color="#3b82f6" />
-        <Text style={styles.title}>Vị trí bất động sản trên bản đồ</Text>
-      </View>
-      <View style={styles.mapContainer} ref={mapContainer}>
-        {/* TODO: Implement react-native-maps here */}
-        <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>
-            Bản đồ sẽ được hiển thị ở đây
-          </Text>
-          <Text style={styles.coordinatesText}>Tọa độ: {mapLocation}</Text>
-        </View>
+      <MapView
+        provider={PROVIDER_DEFAULT}
+        style={styles.map}
+        initialRegion={{
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+        showsUserLocation={false}
+        showsMyLocationButton={false}
+        showsCompass={true}
+        showsScale={true}
+        zoomEnabled={true}
+        scrollEnabled={true}
+        pitchEnabled={false}
+        rotateEnabled={false}
+        loadingEnabled={true}
+        loadingIndicatorColor="#3b82f6"
+        loadingBackgroundColor="#f3f4f6"
+      >
+        <Marker
+          coordinate={{ latitude, longitude }}
+          title="Vị trí bất động sản"
+          description={`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`}
+          pinColor="#ef4444"
+        />
+      </MapView>
+
+      {/* Attribution */}
+      <View style={styles.attribution}>
+        <Text style={styles.attributionText}>© OpenStreetMap contributors</Text>
       </View>
     </View>
   );
@@ -62,51 +77,47 @@ export default function MapLocation({ mapLocation }: MapLocationProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
+    width: "100%",
+    height: 300,
     borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  title: {
-    marginLeft: 8,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#3b82f6",
-  },
-  mapContainer: {
-    height: 160,
-    borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#f3f4f6",
+    position: "relative",
   },
-  placeholder: {
+  map: {
+    flex: 1,
+  },
+  errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9fafb",
+    backgroundColor: "#fef2f2",
+    padding: 24,
   },
-  placeholderText: {
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#dc2626",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorText: {
     fontSize: 14,
-    color: "#6b7280",
+    color: "#7f1d1d",
     textAlign: "center",
-  },
-  coordinatesText: {
-    fontSize: 12,
-    color: "#9ca3af",
     marginTop: 4,
+  },
+  attribution: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  attributionText: {
+    fontSize: 10,
+    color: "#6b7280",
   },
 });
