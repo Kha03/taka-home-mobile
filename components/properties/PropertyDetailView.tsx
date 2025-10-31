@@ -25,14 +25,34 @@ interface PropertyDetailViewProps {
   type: string;
   user: any;
   isAuthenticated: boolean;
-  onStartChat: (propertyId: string, landlordId: string) => Promise<void>;
-  onCreateBooking: (
-    propertyId: string,
-    roomId: string | undefined,
-    landlordId: string
-  ) => Promise<void>;
+  onStartChat: (propertyId: string, landlordId: string) => void;
   onFetchLandlordStats: (landlordId: string) => Promise<any>;
 }
+
+// Type for processed property data
+type ProcessedPropertyData = {
+  title: string;
+  price: number;
+  location: string;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  furnishing: string;
+  category: string;
+  updatedAt: string | undefined;
+} & (
+  | {
+      // Apartment specific fields
+      unit: string;
+    }
+  | {
+      // Boarding specific fields
+      roomTypeName: string;
+      roomCount: number;
+      electricityPrice: number;
+      waterPrice: number;
+    }
+);
 
 // Type guard function
 const isRoomTypeDetail = (
@@ -47,14 +67,11 @@ export default function PropertyDetailView({
   user,
   isAuthenticated,
   onStartChat,
-  onCreateBooking,
   onFetchLandlordStats,
 }: PropertyDetailViewProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-  const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [isCreatingChat, setIsCreatingChat] = useState(false);
-  const [isCreatingBooking, setIsCreatingBooking] = useState(false);
   const [landlordStats, setLandlordStats] = useState({
     totalProperties: 0,
     totalBooking: 0,
@@ -119,29 +136,57 @@ export default function PropertyDetailView({
     return (property as Property).mapLocation;
   };
 
+  const getDescription = (): string | undefined => {
+    if (isRoomTypeDetail(property)) {
+      // For boarding: use both room type description and property description
+      const roomTypeDesc = property.description;
+      const propertyDesc = property.rooms[0]?.property?.description;
+
+      if (roomTypeDesc && propertyDesc) {
+        return `${roomTypeDesc}\n\nThông tin chi tiết về nhà trọ:\n${propertyDesc}`;
+      }
+      return roomTypeDesc || propertyDesc;
+    }
+    return (property as Property).description;
+  };
+
   const getData = () => {
     if (isRoomTypeDetail(property)) {
-      const propertyInfo = property.rooms[0]?.property;
+      // BOARDING: Extract data from RoomTypeDetail structure
+      const propertyInfo = property.rooms?.[0]?.property;
+      const address = propertyInfo?.address || "";
+      const ward = propertyInfo?.ward || "";
+      const province = propertyInfo?.province || "";
+
       return {
-        title: propertyInfo?.title || "Phòng trọ",
+        title: propertyInfo?.title || property.name || "Chi tiết phòng trọ",
         price: Number(property.price) || 0,
-        location: `${propertyInfo?.address}, ${propertyInfo?.ward}, ${propertyInfo?.province}`,
+        location:
+          [address, ward, province].filter(Boolean).join(", ") ||
+          "Không có thông tin địa chỉ",
         bedrooms: property.bedrooms || 0,
         bathrooms: property.bathrooms || 0,
         area: Number(property.area) || 0,
         furnishing: property.furnishing || "Không có thông tin",
         category: "Phòng trọ",
-        roomTypeName: property.name,
+        roomTypeName: property.name || "",
         roomCount: property.rooms?.filter((r) => !r.isVisible).length || 0,
         electricityPrice: Number(propertyInfo?.electricityPricePerKwh) || 0,
         waterPrice: Number(propertyInfo?.waterPricePerM3) || 0,
-        updatedAt: property.updatedAt,
+        updatedAt: property.updatedAt || propertyInfo?.updatedAt,
       };
     } else {
+      // APARTMENT: Extract data from Property structure
+      const address = property.address || "";
+      const ward = property.ward || "";
+      const province = property.province || "";
+
       return {
-        title: property.title || "Bất động sản",
+        title: property.title || "Chi tiết bất động sản",
         price: property.price || 0,
-        location: `${property.address}, ${property.ward}, ${property.province}`,
+        location:
+          [address, ward, province].filter(Boolean).join(", ") ||
+          "Không có thông tin địa chỉ",
         bedrooms: property.bedrooms || 0,
         bathrooms: property.bathrooms || 0,
         area: property.area || 0,
@@ -151,6 +196,49 @@ export default function PropertyDetailView({
         updatedAt: property.updatedAt,
       };
     }
+  };
+
+  const getApartmentInfo = (): string[] => {
+    if (!property || isRoomTypeDetail(property)) return [];
+
+    const apt = property as Property;
+    const info: string[] = [];
+
+    if (apt.block) info.push(`Tòa nhà: ${apt.block}`);
+    if (apt.floor) info.push(`Tầng: ${apt.floor}`);
+    if (apt.unit) info.push(`Căn hộ: ${apt.unit}`);
+    if (apt.bedrooms) info.push(`Phòng ngủ: ${apt.bedrooms}`);
+    if (apt.bathrooms) info.push(`Phòng tắm: ${apt.bathrooms}`);
+
+    return info;
+  };
+
+  // Helper functions for type-safe access
+  const getBoardingSpecificData = () => {
+    if (!isRoomTypeDetail(property)) return null;
+
+    const processedData = getData();
+    if ("roomTypeName" in processedData) {
+      return {
+        roomTypeName: processedData.roomTypeName,
+        roomCount: processedData.roomCount,
+        electricityPrice: processedData.electricityPrice,
+        waterPrice: processedData.waterPrice,
+      };
+    }
+    return null;
+  };
+
+  const getApartmentSpecificData = () => {
+    if (isRoomTypeDetail(property)) return null;
+
+    const processedData = getData();
+    if ("unit" in processedData) {
+      return {
+        unit: processedData.unit,
+      };
+    }
+    return null;
   };
 
   const images = getImages();
@@ -189,7 +277,8 @@ export default function PropertyDetailView({
     fetchLandlordStats();
   }, [landlord?.id]);
 
-  const formatPrice = (price: number): string => {
+  const formatPrice = (price: number | undefined): string => {
+    if (!price || price === 0) return "0";
     return new Intl.NumberFormat("vi-VN").format(price);
   };
 
@@ -221,37 +310,6 @@ export default function PropertyDetailView({
       await onStartChat(propertyId, landlord.id);
     } finally {
       setIsCreatingChat(false);
-    }
-  };
-
-  const handleCreateBooking = async () => {
-    if (!landlord?.id) return;
-
-    if (propertyType === "boarding" && !selectedUnit) {
-      Alert.alert(
-        "Thông báo",
-        "Bạn cần chọn phòng trước khi gửi yêu cầu thuê."
-      );
-      return;
-    }
-
-    setIsCreatingBooking(true);
-    try {
-      let roomId: string | undefined;
-
-      if (propertyType === "boarding" && selectedUnit) {
-        if (isRoomTypeDetail(property)) {
-          const selectedRoom = property.rooms.find(
-            (room) => room.name === selectedUnit
-          );
-          roomId = selectedRoom?.id;
-        }
-      }
-
-      await onCreateBooking(propertyId, roomId, landlord.id);
-      setSelectedUnit("");
-    } finally {
-      setIsCreatingBooking(false);
     }
   };
 
@@ -372,8 +430,8 @@ export default function PropertyDetailView({
               label={isRoomTypeDetail(property) ? "Số phòng trống" : "Mã căn"}
               value={
                 isRoomTypeDetail(property)
-                  ? `${data.roomCount} phòng`
-                  : data.unit || "N/A"
+                  ? `${getBoardingSpecificData()?.roomCount || 0} phòng`
+                  : getApartmentSpecificData()?.unit || "N/A"
               }
             />
           </View>
@@ -394,14 +452,39 @@ export default function PropertyDetailView({
               value={data.furnishing}
             />
           </View>
+
+          {/* Additional info for boarding houses */}
+          {isRoomTypeDetail(property) && getBoardingSpecificData() && (
+            <View style={styles.detailRow}>
+              <PropertyDetailItem
+                icon="flash"
+                label="Giá điện"
+                value={`${formatPrice(
+                  getBoardingSpecificData()?.electricityPrice || 0
+                )} VND/kWh`}
+              />
+              <PropertyDetailItem
+                icon="water"
+                label="Giá nước"
+                value={`${formatPrice(
+                  getBoardingSpecificData()?.waterPrice || 0
+                )} VND/m³`}
+              />
+              <PropertyDetailItem
+                icon="pricetag"
+                label="Loại phòng"
+                value={getBoardingSpecificData()?.roomTypeName || ""}
+              />
+            </View>
+          )}
         </View>
       </View>
 
       {/* Property Description */}
-      {property.description && (
+      {getDescription() && (
         <View style={styles.descriptionSection}>
           <Text style={styles.sectionTitle}>Mô tả chi tiết</Text>
-          <Text style={styles.descriptionText}>{property.description}</Text>
+          <Text style={styles.descriptionText}>{getDescription()}</Text>
         </View>
       )}
 
@@ -479,79 +562,47 @@ export default function PropertyDetailView({
         </View>
       )}
 
-      {/* Booking Section */}
-      <View style={styles.bookingSection}>
-        <Text style={styles.sectionTitle}>Gửi yêu cầu thuê bất động sản?</Text>
-
-        {/* Unit/Room Selection */}
-        {propertyType === "boarding" ? (
-          <View style={styles.roomSelection}>
-            <Text style={styles.roomSelectionLabel}>Chọn phòng:</Text>
-            <View style={styles.roomGrid}>
-              {units.map((unit) => (
-                <Pressable
-                  key={unit}
-                  style={[
-                    styles.roomButton,
-                    selectedUnit === unit && styles.selectedRoomButton,
-                  ]}
-                  onPress={() => setSelectedUnit(unit)}
-                >
-                  <Text
-                    style={[
-                      styles.roomButtonText,
-                      selectedUnit === unit && styles.selectedRoomButtonText,
-                    ]}
-                  >
-                    {unit}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        ) : (
-          // APARTMENT: Display unit info
+      {/* Property Info Only - No Booking Feature */}
+      {propertyType === "boarding" && (
+        <View style={styles.contentSection}>
+          <Text style={styles.sectionTitle}>Thông tin phòng trọ</Text>
           <View style={styles.unitInfo}>
-            <Text style={styles.unitInfoLabel}>Thông tin căn hộ:</Text>
-            {(property as Property).block && (
-              <Text style={styles.unitInfoText}>
-                Tòa nhà: {(property as Property).block}
-              </Text>
-            )}
-            {(property as Property).floor && (
-              <Text style={styles.unitInfoText}>
-                Tầng: {(property as Property).floor}
-              </Text>
-            )}
-            {(property as Property).unit && (
-              <Text style={styles.unitInfoText}>
-                Căn hộ: {(property as Property).unit}
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* Booking Button */}
-        <Pressable
-          style={[styles.bookingButton, isRented && styles.disabledButton]}
-          onPress={handleCreateBooking}
-          disabled={isCreatingBooking || isRented}
-        >
-          <Ionicons name="send" size={20} color="#ffffff" />
-          <Text style={styles.bookingButtonText}>
-            {isCreatingBooking ? "Đang gửi..." : "Yêu cầu thuê"}
-          </Text>
-        </Pressable>
-
-        {/* Rental Status Warning */}
-        {isRented && (
-          <View style={styles.warningBox}>
-            <Text style={styles.warningText}>
-              Đang cho thuê, hãy quay lại sau
+            <Text style={styles.unitInfoText}>
+              Loại phòng:{" "}
+              {getBoardingSpecificData()?.roomTypeName || "Không có thông tin"}
             </Text>
+            <Text style={styles.unitInfoText}>
+              Số phòng trống: {getBoardingSpecificData()?.roomCount || 0}
+            </Text>
+            {(getBoardingSpecificData()?.electricityPrice || 0) > 0 && (
+              <Text style={styles.unitInfoText}>
+                Giá điện:{" "}
+                {formatPrice(getBoardingSpecificData()?.electricityPrice || 0)}
+                /kWh
+              </Text>
+            )}
+            {(getBoardingSpecificData()?.waterPrice || 0) > 0 && (
+              <Text style={styles.unitInfoText}>
+                Giá nước:{" "}
+                {formatPrice(getBoardingSpecificData()?.waterPrice || 0)}/m³
+              </Text>
+            )}
           </View>
-        )}
-      </View>
+        </View>
+      )}
+
+      {!isRoomTypeDetail(property) && (
+        <View style={styles.contentSection}>
+          <Text style={styles.sectionTitle}>Thông tin căn hộ</Text>
+          <View style={styles.unitInfo}>
+            {getApartmentInfo().map((info: string, index: number) => (
+              <Text key={index} style={styles.unitInfoText}>
+                {info}
+              </Text>
+            ))}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -795,45 +846,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-  bookingSection: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#f3f4f6",
-  },
-  roomSelection: {
-    marginBottom: 16,
-  },
-  roomSelectionLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#374151",
-    marginBottom: 8,
-  },
-  roomGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  roomButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: "#e5e7eb",
-    borderWidth: 1,
-    borderColor: "#d1d5db",
-  },
-  selectedRoomButton: {
-    backgroundColor: "#3b82f6",
-    borderColor: "#3b82f6",
-  },
-  roomButtonText: {
-    fontSize: 12,
-    color: "#4f46e5",
-    fontWeight: "500",
-  },
-  selectedRoomButtonText: {
-    color: "#ffffff",
-  },
+
   unitInfo: {
     backgroundColor: "#f9fafb",
     borderRadius: 8,
@@ -850,36 +863,5 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#1f2937",
     marginBottom: 2,
-  },
-  bookingButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#10b981",
-    paddingVertical: 12,
-    borderRadius: 8,
-    gap: 8,
-  },
-  disabledButton: {
-    backgroundColor: "#9ca3af",
-  },
-  bookingButtonText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  warningBox: {
-    backgroundColor: "#fef3c7",
-    borderColor: "#f59e0b",
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    marginTop: 12,
-  },
-  warningText: {
-    fontSize: 14,
-    color: "#92400e",
-    fontWeight: "500",
-    textAlign: "center",
   },
 });

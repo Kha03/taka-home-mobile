@@ -211,7 +211,13 @@ export default function PropertiesScreen() {
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push(`/properties/${displayId}`)}
+        onPress={() => {
+          const url =
+            propertyType === "boarding"
+              ? `/properties/${displayId}?type=BOARDING`
+              : `/properties/${displayId}`;
+          router.push(url);
+        }}
         activeOpacity={0.7}
       >
         <Image

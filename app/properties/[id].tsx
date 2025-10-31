@@ -11,7 +11,6 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { propertyService } from "@/lib/api/services/property";
 import { statisticsService } from "@/lib/api/services/statistics";
 import { chatService } from "@/lib/api/services/chat";
-import { bookingService } from "@/lib/api/services/booking";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "@/hooks/use-toast";
 import type { Property, RoomTypeDetail } from "@/lib/api/types";
@@ -46,16 +45,13 @@ export default function PropertyDetailPage() {
       setLoading(true);
       setError(null);
 
-      let response;
-      const propertyType = type || "apartment";
+      const propertyType = (type || "apartment").toUpperCase();
+      const isBoarding = propertyType === "BOARDING";
 
-      if (propertyType === "boarding") {
-        // Get room type detail for boarding
-        response = await propertyService.getRoomTypeById(id);
-      } else {
-        // Get property detail for apartment
-        response = await propertyService.getPropertyById(id);
-      }
+      // Call appropriate API based on property type
+      const response = isBoarding
+        ? await propertyService.getRoomTypeById(id)
+        : await propertyService.getPropertyById(id);
 
       if (response.code === 200 && response.data) {
         setProperty(response.data);
@@ -95,48 +91,6 @@ export default function PropertyDetailPage() {
     } catch (error) {
       console.error("Error creating chat:", error);
       toast.error("Có lỗi xảy ra khi tạo phòng chat. Vui lòng thử lại.");
-    }
-  };
-
-  const handleCreateBooking = async (
-    propertyId: string,
-    roomId: string | undefined,
-    landlordId: string
-  ) => {
-    if (!isAuthenticated || !user) {
-      toast.error("Vui lòng đăng nhập để gửi yêu cầu thuê.");
-      router.push("/signin");
-      return;
-    }
-
-    if (user.id === landlordId) {
-      toast.error("Bạn không thể thuê bất động sản của chính mình.");
-      return;
-    }
-
-    try {
-      const bookingData: { propertyId?: string; roomId?: string } = {};
-
-      if (roomId) {
-        // BOARDING: Send roomId
-        bookingData.roomId = roomId;
-      } else {
-        // APARTMENT: Send propertyId
-        bookingData.propertyId = propertyId;
-      }
-
-      const response = await bookingService.createBooking(bookingData);
-
-      if ((response.code === 201 || response.code === 200) && response.data) {
-        toast.success(
-          "Yêu cầu thuê đã được gửi. Vui lòng chờ chủ nhà xác nhận."
-        );
-      } else {
-        toast.error(response.message || "Không thể gửi yêu cầu thuê.");
-      }
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      toast.error("Có lỗi xảy ra khi gửi yêu cầu thuê. Vui lòng thử lại.");
     }
   };
 
@@ -214,7 +168,6 @@ export default function PropertyDetailPage() {
         user={user}
         isAuthenticated={isAuthenticated}
         onStartChat={handleStartChat}
-        onCreateBooking={handleCreateBooking}
         onFetchLandlordStats={handleFetchLandlordStats}
       />
     </>
