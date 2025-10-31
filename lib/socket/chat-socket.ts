@@ -4,6 +4,7 @@
  */
 
 import { io, Socket } from "socket.io-client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_CONFIG } from "../api/config";
 
 // Types matching backend gateway
@@ -22,6 +23,7 @@ export interface SocketMessage {
 export interface SendMessagePayload {
   chatroomId: string;
   content: string;
+  id?: string; // Optional: message ID from database for tracking
 }
 
 export interface JoinRoomPayload {
@@ -65,7 +67,7 @@ export class ChatSocketManager {
   /**
    * Kết nối đến Socket.IO server với namespace /chat
    */
-  connect(token?: string): void {
+  async connect(token?: string): Promise<void> {
     if (this.socket?.connected || this.isConnecting) {
       return;
     }
@@ -73,7 +75,7 @@ export class ChatSocketManager {
     this.isConnecting = true;
 
     const socketUrl = API_CONFIG.BASE_URL.replace("/api", "");
-    const authToken = token || this.getToken();
+    const authToken = token || (await this.getToken());
 
     // Connect to /chat namespace
     this.socket = io(`${socketUrl}/chat`, {
@@ -91,15 +93,16 @@ export class ChatSocketManager {
   }
 
   /**
-   * Lấy token từ localStorage
+   * Lấy token từ AsyncStorage
    */
-  private getToken(): string | null {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("accessToken") || localStorage.getItem("token")
-      );
+  private async getToken(): Promise<string | null> {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      return token;
+    } catch (error) {
+      console.error("Failed to get token from AsyncStorage:", error);
+      return null;
     }
-    return null;
   }
 
   /**

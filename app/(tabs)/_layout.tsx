@@ -34,6 +34,17 @@ export default function TabLayout() {
         }}
       />
 
+      {/* Chats - Tin nhắn */}
+      <Tabs.Screen
+        name="chats"
+        options={{
+          title: "Tin nhắn",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="chat" size={size} color={color} />
+          ),
+        }}
+      />
+
       {/* Contracts - Hợp đồng của tôi */}
       <Tabs.Screen
         name="contracts"

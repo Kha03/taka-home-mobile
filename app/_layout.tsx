@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/contexts/auth-context";
+import { ChatProvider } from "@/contexts/chat-context";
 import { ThemeProvider } from "@/lib/theme";
 import { Stack } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -15,13 +16,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="properties" options={{ headerShown: false }} />
-          <Stack.Screen name="chat" options={{ headerShown: false }} />
-        </Stack>
-        <Toast config={toastConfig} />
+        <ChatProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="properties" options={{ headerShown: false }} />
+            <Stack.Screen name="chat" options={{ headerShown: false }} />
+          </Stack>
+          <Toast config={toastConfig} />
+        </ChatProvider>
       </AuthProvider>
     </ThemeProvider>
   );
