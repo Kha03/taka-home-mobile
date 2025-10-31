@@ -30,11 +30,11 @@ export const CustomToast = ({ text1, text2, type }: CustomToastProps) => {
       case "error":
         return "#ef4444";
       case "info":
-        return "#3b82f6";
+        return "#fba31d";
       case "warning":
         return "#f59e0b";
       default:
-        return "#3b82f6";
+        return "#fba31d";
     }
   };
 
@@ -45,11 +45,11 @@ export const CustomToast = ({ text1, text2, type }: CustomToastProps) => {
       case "error":
         return "#ef4444";
       case "info":
-        return "#3b82f6";
+        return "#fba31d";
       case "warning":
         return "#f59e0b";
       default:
-        return "#3b82f6";
+        return "#fba31d";
     }
   };
 

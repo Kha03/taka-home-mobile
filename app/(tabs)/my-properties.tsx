@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   activeTab: {
-    borderBottomColor: "#007AFF",
+    borderBottomColor: "#fba31d",
   },
   tabText: {
     fontSize: 15,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   activeTabText: {
-    color: "#007AFF",
+    color: "#fba31d",
     fontWeight: "600",
   },
   listContent: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 24,

@@ -231,14 +231,14 @@ export default function WalletScreen() {
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
             <TouchableOpacity style={styles.actionButton} onPress={handleTopUp}>
-              <MaterialIcons name="add" size={24} color="#007AFF" />
+              <MaterialIcons name="add" size={24} color="#fba31d" />
               <Text style={styles.actionButtonText}>Nạp tiền</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleWithdraw}
             >
-              <MaterialIcons name="remove" size={24} color="#007AFF" />
+              <MaterialIcons name="remove" size={24} color="#fba31d" />
               <Text style={styles.actionButtonText}>Rút tiền</Text>
             </TouchableOpacity>
           </View>
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     paddingHorizontal: 16,
     paddingVertical: 16,
     paddingTop: 50,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   balanceAmount: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#007AFF",
+    color: "#fba31d",
     marginBottom: 24,
   },
   loadingContainer: {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#007AFF",
+    color: "#fba31d",
   },
   sectionHeader: {
     marginHorizontal: 16,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

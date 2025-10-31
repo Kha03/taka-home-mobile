@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 8,
     paddingVertical: 14,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
   },
   title: {
     fontSize: 16,

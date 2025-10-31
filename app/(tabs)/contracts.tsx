@@ -89,13 +89,13 @@ export default function ContractsScreen() {
       case "awaiting_deposit":
         return {
           label: "Chờ đặt cọc",
-          color: "#2196F3",
+          color: "#071658",
           icon: "account-balance-wallet" as const,
         };
       case "awaiting_landlord_deposit":
         return {
           label: "Chờ cọc chủ nhà",
-          color: "#2196F3",
+          color: "#071658",
           icon: "schedule" as const,
         };
       case "ready_for_handover":
@@ -203,7 +203,7 @@ export default function ContractsScreen() {
             contract.invoices.length > 0 && (
               <View style={styles.invoiceSummary}>
                 <View style={styles.invoiceHeader}>
-                  <MaterialIcons name="receipt" size={16} color="#2196F3" />
+                  <MaterialIcons name="receipt" size={16} color="#071658" />
                   <Text style={styles.invoiceHeaderText}>
                     Hóa đơn ({contract.invoices.length})
                   </Text>
@@ -281,7 +281,7 @@ export default function ContractsScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#071658" />
         <Text style={styles.loadingText}>Đang tải hợp đồng...</Text>
       </View>
     );
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   activeTab: {
-    borderBottomColor: "#2196F3",
+    borderBottomColor: "#071658",
   },
   tabText: {
     fontSize: 13,
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   activeTabText: {
-    color: "#2196F3",
+    color: "#071658",
     fontWeight: "700",
   },
   scrollView: {
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   retryButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

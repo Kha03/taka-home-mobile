@@ -56,7 +56,7 @@ export default function MapLocation({ mapLocation }: MapLocationProps) {
         pitchEnabled={false}
         rotateEnabled={false}
         loadingEnabled={true}
-        loadingIndicatorColor="#3b82f6"
+        loadingIndicatorColor="#fba31d"
         loadingBackgroundColor="#f3f4f6"
       >
         <Marker

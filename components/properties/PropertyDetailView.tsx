@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   activeThumbnail: {
-    borderColor: "#3b82f6",
+    borderColor: "#fba31d",
   },
   thumbnailImage: {
     width: "100%",
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#fba31d",
     paddingVertical: 12,
     borderRadius: 8,
     gap: 8,

@@ -3,7 +3,7 @@ import React from "react";
 
 const theme = createTheme({
   lightColors: {
-    primary: "#2196F3",
+    primary: "#071658",
     secondary: "#03A9F4",
     background: "#FFFFFF",
     white: "#FFFFFF",
@@ -19,7 +19,7 @@ const theme = createTheme({
     success: "#4caf50",
   },
   darkColors: {
-    primary: "#2196F3",
+    primary: "#071658",
     secondary: "#03A9F4",
     background: "#121212",
     white: "#FFFFFF",

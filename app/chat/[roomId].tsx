@@ -268,11 +268,11 @@ export default function ChatRoomScreen() {
           options={{
             title: "Đang tải...",
             headerShown: true,
-            headerStyle: { backgroundColor: "#3b82f6" },
+            headerStyle: { backgroundColor: "#fba31d" },
             headerTintColor: "#ffffff",
           }}
         />
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color="#fba31d" />
       </View>
     );
   }
@@ -287,7 +287,7 @@ export default function ChatRoomScreen() {
         options={{
           title: otherUserName || "Chat",
           headerShown: true,
-          headerStyle: { backgroundColor: "#3b82f6" },
+          headerStyle: { backgroundColor: "#fba31d" },
           headerTintColor: "#ffffff",
           headerTitleStyle: { fontWeight: "600" },
         }}
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   myMessageBubble: {
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#fba31d",
     borderBottomRightRadius: 4,
   },
   theirMessageBubble: {
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#fba31d",
     justifyContent: "center",
     alignItems: "center",
   },

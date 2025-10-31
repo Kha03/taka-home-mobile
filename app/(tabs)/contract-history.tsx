@@ -169,7 +169,7 @@ export default function ContractHistoryScreen() {
       { label: string; color: string; icon: string }
     > = {
       PAID: { label: "Đã thanh toán", color: "#4CAF50", icon: "check-circle" },
-      SCHEDULED: { label: "Đã lên lịch", color: "#2196F3", icon: "schedule" },
+      SCHEDULED: { label: "Đã lên lịch", color: "#071658", icon: "schedule" },
       OVERDUE: { label: "Quá hạn", color: "#F44336", icon: "warning" },
     };
 
@@ -197,7 +197,7 @@ export default function ContractHistoryScreen() {
             );
           }}
         >
-          <MaterialIcons name="info-outline" size={24} color="#007AFF" />
+          <MaterialIcons name="info-outline" size={24} color="#fba31d" />
         </TouchableOpacity>
       </View>
 
@@ -270,7 +270,7 @@ export default function ContractHistoryScreen() {
 
             {/* Organization Info Badge */}
             <View style={styles.orgInfoContainer}>
-              <MaterialIcons name="business" size={18} color="#007AFF" />
+              <MaterialIcons name="business" size={18} color="#fba31d" />
               <Text style={styles.orgInfoText}>
                 Đang tra cứu từ:{" "}
                 <Text style={styles.orgInfoBold}>
@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   activeTab: {
-    borderBottomColor: "#007AFF",
+    borderBottomColor: "#fba31d",
   },
   tabText: {
     fontSize: 15,
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   activeTabText: {
-    color: "#007AFF",
+    color: "#fba31d",
     fontWeight: "600",
   },
   content: {
@@ -775,7 +775,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#071658",
     borderRadius: 8,
     paddingVertical: 14,
     gap: 8,
@@ -803,7 +803,7 @@ const styles = StyleSheet.create({
   },
   orgInfoBold: {
     fontWeight: "700",
-    color: "#007AFF",
+    color: "#fba31d",
   },
   paymentStatusContainer: {
     padding: 16,
@@ -831,8 +831,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statusFilterButtonActive: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
+    backgroundColor: "#071658",
+    borderColor: "#071658",
   },
   statusFilterText: {
     fontSize: 13,
@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
   cardHeaderNumber: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#007AFF",
+    color: "#071658",
   },
   cardHeaderTitle: {
     fontSize: 16,
@@ -949,7 +949,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   priceHighlight: {
-    color: "#007AFF",
+    color: "#fba31d",
     fontSize: 16,
   },
   signaturesSection: {

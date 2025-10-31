@@ -149,13 +149,13 @@ export default function ChatsScreen() {
           options={{
             title: "Tin nhắn",
             headerShown: true,
-            headerStyle: { backgroundColor: "#3b82f6" },
+            headerStyle: { backgroundColor: "#fba31d" },
             headerTintColor: "#ffffff",
             headerTitleStyle: { fontWeight: "600", fontSize: 18 },
           }}
         />
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#3b82f6" />
+          <ActivityIndicator size="large" color="#fba31d" />
         </View>
       </SafeAreaView>
     );
@@ -167,7 +167,7 @@ export default function ChatsScreen() {
         options={{
           title: "Tin nhắn",
           headerShown: true,
-          headerStyle: { backgroundColor: "#3b82f6" },
+          headerStyle: { backgroundColor: "#fba31d" },
           headerTintColor: "#ffffff",
           headerTitleStyle: { fontWeight: "600", fontSize: 18 },
           headerRight: () => (
@@ -195,8 +195,8 @@ export default function ChatsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={["#3b82f6"]}
-            tintColor="#3b82f6"
+            colors={["#fba31d"]}
+            tintColor="#fba31d"
           />
         }
         ListEmptyComponent={
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   propertyTitle: {
     fontSize: 13,
-    color: "#3b82f6",
+    color: "#fba31d",
     fontWeight: "500",
   },
   lastMessage: {

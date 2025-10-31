@@ -115,7 +115,7 @@ export default function PropertyDetailPage() {
             headerShown: true,
           }}
         />
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color="#fba31d" />
         <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
       </View>
     );
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   retryButton: {
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#fba31d",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

@@ -211,7 +211,7 @@ export function InvoicePaymentModal({
 
           {loading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#2196F3" />
+              <ActivityIndicator size="large" color="#071658" />
               <Text style={styles.loadingText}>
                 Đang tải thông tin hóa đơn...
               </Text>
@@ -353,7 +353,7 @@ export function InvoicePaymentModal({
                       <MaterialIcons
                         name="account-balance-wallet"
                         size={24}
-                        color={selectedMethod === "WALLET" ? "#2196F3" : "#666"}
+                        color={selectedMethod === "WALLET" ? "#071658" : "#666"}
                       />
                       <View style={styles.paymentMethodContent}>
                         <Text
@@ -378,7 +378,7 @@ export function InvoicePaymentModal({
                         <MaterialIcons
                           name="check-circle"
                           size={24}
-                          color="#2196F3"
+                          color="#071658"
                         />
                       )}
                     </TouchableOpacity>
@@ -393,7 +393,7 @@ export function InvoicePaymentModal({
                       <MaterialIcons
                         name="credit-card"
                         size={24}
-                        color={selectedMethod === "VNPAY" ? "#2196F3" : "#666"}
+                        color={selectedMethod === "VNPAY" ? "#071658" : "#666"}
                       />
                       <View style={styles.paymentMethodContent}>
                         <Text
@@ -413,7 +413,7 @@ export function InvoicePaymentModal({
                         <MaterialIcons
                           name="check-circle"
                           size={24}
-                          color="#2196F3"
+                          color="#071658"
                         />
                       )}
                     </TouchableOpacity>
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
     borderRadius: 8,
     borderLeftWidth: 3,
-    borderLeftColor: "#2196F3",
+    borderLeftColor: "#071658",
   },
   itemLeft: {
     flexDirection: "row",
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
   itemAmount: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#2196F3",
+    color: "#071658",
   },
   subtotalRow: {
     flexDirection: "row",
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E3F2FD",
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#2196F3",
+    borderColor: "#071658",
   },
   totalLabel: {
     fontSize: 14,
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   selectedMethod: {
-    borderColor: "#2196F3",
+    borderColor: "#071658",
     backgroundColor: "#F3F8FF",
   },
   paymentMethodContent: {
@@ -673,7 +673,7 @@ const styles = StyleSheet.create({
     color: "#212121",
   },
   selectedMethodText: {
-    color: "#2196F3",
+    color: "#071658",
   },
   paymentMethodSubtitle: {
     fontSize: 13,
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     borderRadius: 8,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
     gap: 8,
   },
   disabledButton: {

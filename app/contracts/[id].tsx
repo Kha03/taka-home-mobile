@@ -69,13 +69,13 @@ export default function ContractDetailScreen() {
       activeOpacity={0.7}
     >
       {copyLoading ? (
-        <ActivityIndicator size="small" color="#2196F3" />
+        <ActivityIndicator size="small" color="#071658" />
       ) : (
         <>
           <MaterialIcons
             name={copied ? "check" : "content-copy"}
             size={16}
-            color={copied ? "#4CAF50" : "#2196F3"}
+            color={copied ? "#4CAF50" : "#071658"}
           />
           <Text
             style={[styles.copyButtonText, copied && styles.copiedButtonText]}
@@ -205,13 +205,13 @@ export default function ContractDetailScreen() {
       case "awaiting_deposit":
         return {
           label: "Chờ đặt cọc",
-          color: "#2196F3",
+          color: "#071658",
           icon: "account-balance-wallet" as const,
         };
       case "awaiting_landlord_deposit":
         return {
           label: userRole[0] === "LANDLORD" ? "Chờ đặt cọc" : "Chờ chủ nhà",
-          color: "#2196F3",
+          color: "#071658",
           icon: "schedule" as const,
         };
       case "ready_for_handover":
@@ -329,7 +329,7 @@ export default function ContractDetailScreen() {
             onPress={handleViewContract}
             disabled={actionLoading}
           >
-            <MaterialIcons name="description" size={20} color="#2196F3" />
+            <MaterialIcons name="description" size={20} color="#071658" />
             <Text style={styles.secondaryButtonText}>Xem hợp đồng</Text>
           </TouchableOpacity>
         </View>
@@ -412,14 +412,14 @@ export default function ContractDetailScreen() {
             </Text>
             <View style={styles.invoiceActions}>
               <View style={styles.invoiceActionText}>
-                <MaterialIcons name="touch-app" size={16} color="#2196F3" />
+                <MaterialIcons name="touch-app" size={16} color="#071658" />
                 <Text style={styles.tapToViewText}>
                   {invoice.status === "PAID"
                     ? "Nhấp để xem chi tiết"
                     : "Nhấp để thanh toán"}
                 </Text>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color="#2196F3" />
+              <MaterialIcons name="chevron-right" size={20} color="#071658" />
             </View>
           </TouchableOpacity>
         ))}
@@ -430,7 +430,7 @@ export default function ContractDetailScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#071658" />
         <Text style={styles.loadingText}>Đang tải thông tin hợp đồng...</Text>
       </View>
     );
@@ -555,7 +555,7 @@ export default function ContractDetailScreen() {
               <MaterialIcons
                 name="account-balance-wallet"
                 size={20}
-                color="#2196F3"
+                color="#071658"
               />
               <Text style={styles.infoLabel}>Tiền cọc:</Text>
               <Text style={[styles.infoValue, styles.depositText]}>
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#2196F3",
+    borderColor: "#071658",
     gap: 4,
   },
   copiedButton: {
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
   },
   copyButtonText: {
     fontSize: 12,
-    color: "#2196F3",
+    color: "#071658",
     fontWeight: "600",
   },
   copiedButtonText: {
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
   },
   depositText: {
     fontWeight: "bold",
-    color: "#2196F3",
+    color: "#071658",
     fontSize: 16,
   },
   statusInfoContainer: {
@@ -765,12 +765,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primaryButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
   },
   secondaryButton: {
     backgroundColor: "#FFF",
     borderWidth: 1,
-    borderColor: "#2196F3",
+    borderColor: "#071658",
   },
   primaryButtonText: {
     color: "#FFF",
@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   secondaryButtonText: {
-    color: "#2196F3",
+    color: "#071658",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -826,7 +826,7 @@ const styles = StyleSheet.create({
   },
   tapToViewText: {
     fontSize: 13,
-    color: "#2196F3",
+    color: "#071658",
     fontWeight: "500",
   },
   loadingText: {
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     marginTop: 16,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

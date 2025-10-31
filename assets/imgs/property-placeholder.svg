@@ -23,15 +23,15 @@
   <circle cx="215" cy="235" r="3" fill="#fbbf24" />
   
   <!-- Windows -->
-  <rect x="80" y="150" width="60" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
-  <rect x="260" y="150" width="60" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
+  <rect x="80" y="150" width="60" height="50" fill="#dbeafe" stroke="#fba31d" stroke-width="2" />
+  <rect x="260" y="150" width="60" height="50" fill="#dbeafe" stroke="#fba31d" stroke-width="2" />
   
   <!-- Window frames -->
-  <line x1="110" y1="150" x2="110" y2="200" stroke="#3b82f6" stroke-width="2" />
-  <line x1="80" y1="175" x2="140" y2="175" stroke="#3b82f6" stroke-width="2" />
+  <line x1="110" y1="150" x2="110" y2="200" stroke="#fba31d" stroke-width="2" />
+  <line x1="80" y1="175" x2="140" y2="175" stroke="#fba31d" stroke-width="2" />
   
-  <line x1="290" y1="150" x2="290" y2="200" stroke="#3b82f6" stroke-width="2" />
-  <line x1="260" y1="175" x2="320" y2="175" stroke="#3b82f6" stroke-width="2" />
+  <line x1="290" y1="150" x2="290" y2="200" stroke="#fba31d" stroke-width="2" />
+  <line x1="260" y1="175" x2="320" y2="175" stroke="#fba31d" stroke-width="2" />
   
   <!-- Chimney -->
   <rect x="280" y="70" width="25" height="60" fill="#6b7280" />

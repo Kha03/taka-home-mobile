@@ -659,7 +659,7 @@ export default function PropertiesScreen() {
   if (loading && !refreshing) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#071658" />
         <Text style={styles.loadingText}>Đang tải...</Text>
       </View>
     );
@@ -677,7 +677,7 @@ export default function PropertiesScreen() {
           <MaterialIcons
             name={showFilters ? "close" : "filter-list"}
             size={24}
-            color="#2196F3"
+            color="#071658"
           />
         </TouchableOpacity>
       </View>
@@ -721,12 +721,12 @@ export default function PropertiesScreen() {
           <View style={styles.activeFiltersBar}>
             {searchQuery && (
               <View style={styles.activeFilterChip}>
-                <MaterialIcons name="search" size={14} color="#007AFF" />
+                <MaterialIcons name="search" size={14} color="#fba31d" />
                 <Text style={styles.activeFilterText} numberOfLines={1}>
                   {searchQuery}
                 </Text>
                 <TouchableOpacity onPress={clearSearch}>
-                  <MaterialIcons name="close" size={14} color="#007AFF" />
+                  <MaterialIcons name="close" size={14} color="#fba31d" />
                 </TouchableOpacity>
               </View>
             )}
@@ -768,7 +768,7 @@ export default function PropertiesScreen() {
                 >
                   {loadingMore ? (
                     <>
-                      <ActivityIndicator size="small" color="#007AFF" />
+                      <ActivityIndicator size="small" color="#fba31d" />
                       <Text style={styles.loadMoreButtonText}>Đang tải...</Text>
                     </>
                   ) : (
@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   searchButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -915,12 +915,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 6,
     borderWidth: 1,
-    borderColor: "#007AFF",
+    borderColor: "#fba31d",
     maxWidth: 200,
   },
   activeFilterText: {
     fontSize: 13,
-    color: "#007AFF",
+    color: "#fba31d",
     fontWeight: "500",
     flex: 1,
   },
@@ -973,8 +973,8 @@ const styles = StyleSheet.create({
     borderColor: "#e0e0e0",
   },
   filterOptionActive: {
-    backgroundColor: "#2196F3",
-    borderColor: "#2196F3",
+    backgroundColor: "#fba31d",
+    borderColor: "#fba31d",
   },
   filterOptionText: {
     fontSize: 14,
@@ -994,19 +994,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#2196F3",
+    borderColor: "#fba31d",
     alignItems: "center",
   },
   clearButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2196F3",
+    color: "#fba31d",
   },
   applyButton: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: 8,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#fba31d",
     alignItems: "center",
   },
   applyButtonText: {
@@ -1096,7 +1096,7 @@ const styles = StyleSheet.create({
   cardPrice: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#2196F3",
+    color: "#071658",
   },
   priceNote: {
     fontSize: 12,
@@ -1110,7 +1110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loadMoreButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     paddingVertical: 10,
     paddingHorizontal: 32,
     borderRadius: 8,

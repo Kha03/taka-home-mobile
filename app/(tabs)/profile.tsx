@@ -109,7 +109,7 @@ export default function ProfileScreen() {
             )}
           </View>
           <TouchableOpacity style={styles.editButton}>
-            <MaterialIcons name="edit" size={20} color="#007AFF" />
+            <MaterialIcons name="edit" size={20} color="#fba31d" />
           </TouchableOpacity>
         </View>
 
@@ -125,7 +125,7 @@ export default function ProfileScreen() {
                 <MaterialIcons
                   name={item.icon as any}
                   size={24}
-                  color="#007AFF"
+                  color="#fba31d"
                 />
               </View>
               <View style={styles.menuContent}>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#fba31d",
     justifyContent: "center",
     alignItems: "center",
   },

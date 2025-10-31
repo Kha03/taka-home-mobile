@@ -321,7 +321,7 @@ export default function SignUpScreen() {
             checked={acceptTerms}
             onPress={() => setAcceptTerms(!acceptTerms)}
             containerStyle={styles.checkboxContainer}
-            checkedColor="#2196F3"
+            checkedColor="#071658"
           />
           {errors.terms ? (
             <Text style={styles.termsError}>{errors.terms}</Text>
@@ -484,8 +484,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   roleButtonActive: {
-    backgroundColor: "#2196F3",
-    borderColor: "#2196F3",
+    backgroundColor: "#071658",
+    borderColor: "#071658",
   },
   roleButtonText: {
     fontSize: 14,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   },
   termsLink: {
     fontSize: 13,
-    color: "#2196F3",
+    color: "#071658",
     fontWeight: "600",
   },
   termsError: {
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   signUpButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#071658",
     borderRadius: 8,
     paddingVertical: 14,
   },
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   signInLink: {
-    color: "#2196F3",
+    color: "#071658",
     fontSize: 14,
     fontWeight: "600",
   },

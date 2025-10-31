@@ -16,7 +16,7 @@ export default function PropertyDetailItem({
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <Ionicons name={icon} size={24} color="#3b82f6" />
+        <Ionicons name={icon} size={24} color="#fba31d" />
       </View>
       <View style={styles.content}>
         <Text style={styles.label}>{label}</Text>
