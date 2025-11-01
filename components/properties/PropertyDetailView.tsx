@@ -115,7 +115,7 @@ export default function PropertyDetailView({
   const getUnits = (): string[] => {
     if (isRoomTypeDetail(property)) {
       return property.rooms
-        .filter((room) => !room.isVisible)
+        .filter((room) => room.isVisible)
         .map((room) => room.name);
     }
     const apartmentProperty = property as Property;
@@ -170,7 +170,7 @@ export default function PropertyDetailView({
         furnishing: property.furnishing || "Không có thông tin",
         category: "Phòng trọ",
         roomTypeName: property.name || "",
-        roomCount: property.rooms?.filter((r) => !r.isVisible).length || 0,
+        roomCount: property.rooms?.filter((r) => r.isVisible).length || 0,
         electricityPrice: Number(propertyInfo?.electricityPricePerKwh) || 0,
         waterPrice: Number(propertyInfo?.waterPricePerM3) || 0,
         updatedAt: property.updatedAt || propertyInfo?.updatedAt,
@@ -249,8 +249,8 @@ export default function PropertyDetailView({
   const data = getData();
   const propertyType = type;
   const isRented = isRoomTypeDetail(property)
-    ? property.rooms.every((room) => room.isVisible)
-    : (property as Property).isVisible;
+    ? property.rooms.every((room) => !room.isVisible)
+    : !(property as any).isVisible;
 
   // Fetch landlord statistics
   useEffect(() => {
