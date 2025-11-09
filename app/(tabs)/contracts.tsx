@@ -304,7 +304,6 @@ export default function ContractsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Hợp Đồng</Text>
-        <Text style={styles.headerSubtitle}>Quản lý hợp đồng thuê của bạn</Text>
       </View>
 
       {/* Tabs */}
@@ -392,20 +391,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
   header: {
-    padding: 20,
-    backgroundColor: "#FFF",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingTop: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
+    borderBottomColor: "#e0e0e0",
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#212121",
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1a1a1a",
   },
   tabs: {
     flexDirection: "row",

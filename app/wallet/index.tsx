@@ -175,13 +175,15 @@ export default function WalletScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <MaterialIcons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Ví của tôi</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Ví của tôi</Text>
+          </View>
         </View>
         <View style={styles.errorContainer}>
           <MaterialIcons name="error-outline" size={48} color="#F44336" />
@@ -200,13 +202,15 @@ export default function WalletScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <MaterialIcons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Ví của tôi</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Ví của tôi</Text>
+        </View>
       </View>
 
       <ScrollView
@@ -324,11 +328,14 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fba31d",
+    backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingVertical: 16,
     paddingTop: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
   },
   backButton: {
     marginRight: 16,
@@ -336,7 +343,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#fff",
+    color: "#1a1a1a",
   },
   content: {
     flex: 1,

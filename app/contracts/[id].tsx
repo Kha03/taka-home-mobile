@@ -459,13 +459,15 @@ export default function ContractDetailScreen() {
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <MaterialIcons name="arrow-back" size={24} color="#212121" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#1a1a1a" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Chi tiết hợp đồng</Text>
+        </View>
       </View>
 
       <ScrollView style={styles.container}>
@@ -603,25 +605,22 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: "#FFF",
+    paddingTop: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderBottomColor: "#e0e0e0",
   },
   backButton: {
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#212121",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1a1a1a",
   },
   contractHeader: {
     backgroundColor: "#FFF",
