@@ -21,6 +21,7 @@ interface AuthContextType {
     token: string
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -214,6 +215,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const refreshUserData = async () => {
+    try {
+      if (!user?.id) {
+        console.error("No user ID available");
+        return;
+      }
+
+      const response = await authService.getCurrentUser(user.id);
+      if (response.code === 200 && response.data) {
+        const userData = response.data;
+        const updatedUser: User = {
+          id: userData.id,
+          email: userData.email,
+          fullName: userData.fullName,
+          avatarUrl: userData.avatarUrl || "/assets/imgs/avatar.png",
+          status: userData.status,
+          phone: userData.phone,
+          CCCD: userData.CCCD || "",
+          roles: userData.roles || [],
+        };
+
+        await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      console.error("Refresh user data error:", error);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isLoading,
@@ -222,6 +252,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     register,
     setAuthFromToken,
     logout,
+    refreshUserData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

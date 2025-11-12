@@ -42,7 +42,7 @@ class ApiClient {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
       async (config) => {
-        // Add accessToken  nếu có (React Native sử dụng AsyncStorage)
+        // Add accessToken nếu có (React Native sử dụng AsyncStorage)
         try {
           const token = await AsyncStorage.getItem("accessToken");
           if (token) {
@@ -52,19 +52,15 @@ class ApiClient {
           console.error("Error getting token from storage:", error);
         }
 
-        // If sending FormData, remove Content-Type header
-        // Let browser set it automatically with boundary
-        if (config.data instanceof FormData) {
+        // Nếu đã set Content-Type là multipart/form-data, giữ nguyên
+        // Axios sẽ tự động thêm boundary
+        // Nếu KHÔNG có Content-Type và data là FormData, xóa Content-Type
+        if (
+          config.data instanceof FormData &&
+          !config.headers["Content-Type"]
+        ) {
           delete config.headers["Content-Type"];
         }
-
-        console.log(
-          `🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,
-          {
-            data: config.data instanceof FormData ? "FormData" : config.data,
-            params: config.params,
-          }
-        );
 
         return config;
       },
@@ -77,14 +73,10 @@ class ApiClient {
     // Response interceptor
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        console.log(`✅ API Response: ${response.status}`, response.data);
         return response;
       },
       async (error: AxiosError) => {
-        console.error(
-          `❌ API Error: ${error.response?.status}`,
-          error.response?.data
-        );
+        console.error("❌ API Error:", error.message);
 
         // Handle 401 Unauthorized (React Native)
         if (error.response?.status === 401) {
@@ -157,18 +149,22 @@ class ApiClient {
       throw apiError;
     } else if (error.request) {
       // Request được gửi nhưng không nhận được response
-      throw {
+      const networkError = {
         message: "Không thể kết nối đến server",
         status: 0,
         code: "NETWORK_ERROR",
       } as ApiError;
+
+      throw networkError;
     } else {
       // Lỗi khác
-      throw {
+      const unknownError = {
         message: error.message || "Có lỗi xảy ra",
         status: 0,
         code: "UNKNOWN_ERROR",
       } as ApiError;
+
+      throw unknownError;
     }
   }
 

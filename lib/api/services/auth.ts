@@ -61,10 +61,10 @@ export class AuthService {
   }
 
   /**
-   * Lấy thông tin account hiện tại
+   * Lấy thông tin user hiện tại theo ID
    */
-  async getCurrentUser(): Promise<ApiResponse<Account>> {
-    return apiClient.get<Account>("/auth/me");
+  async getCurrentUser(userId: string): Promise<ApiResponse<User>> {
+    return apiClient.get<User>(`/users/${userId}`);
   }
 
   /**
@@ -74,6 +74,16 @@ export class AuthService {
     data: Partial<Pick<User, "fullName" | "avatarUrl">>
   ): Promise<ApiResponse<User>> {
     return apiClient.put<User>("/auth/profile", data);
+  }
+
+  /**
+   * Cập nhật số điện thoại của user
+   */
+  async updateUserPhone(
+    userId: string,
+    phone: string
+  ): Promise<ApiResponse<User>> {
+    return apiClient.patch<User>(`/users/${userId}`, { phone });
   }
 
   /**
@@ -167,6 +177,73 @@ export class AuthService {
     } catch (error) {
       return false;
     }
+  }
+
+  /**
+   * Xác thực khuôn mặt với CCCD
+   * Sử dụng axios với config đặc biệt cho React Native FormData
+   */
+  async verifyFaceWithCCCD(
+    faceImageUri: string,
+    cccdImageUri: string
+  ): Promise<
+    ApiResponse<{
+      isMatch: boolean;
+      similarity: number;
+      isBothImgIDCard: boolean;
+      cccdInfo: {
+        id: string;
+        name: string;
+        dob: string;
+        sex: string;
+        home: string;
+        address: string;
+        doe: string;
+        poi: string;
+      };
+    }>
+  > {
+    // Tạo FormData với format đúng cho React Native
+    const formData = new FormData();
+
+    // Lấy tên file từ URI
+    const faceFileName = faceImageUri.split("/").pop() || "face.jpg";
+    const cccdFileName = cccdImageUri.split("/").pop() || "cccd.jpg";
+
+    // React Native FormData format
+    formData.append("faceImage", {
+      uri: faceImageUri,
+      type: "image/jpeg",
+      name: faceFileName,
+    } as any);
+
+    formData.append("cccdImage", {
+      uri: cccdImageUri,
+      type: "image/jpeg",
+      name: cccdFileName,
+    } as any);
+
+    return apiClient.post<{
+      isMatch: boolean;
+      similarity: number;
+      isBothImgIDCard: boolean;
+      cccdInfo: {
+        id: string;
+        name: string;
+        dob: string;
+        sex: string;
+        home: string;
+        address: string;
+        doe: string;
+        poi: string;
+      };
+    }>("/users/verify-face-with-cccd", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      transformRequest: (data) => data,
+      timeout: 60000,
+    });
   }
 }
 

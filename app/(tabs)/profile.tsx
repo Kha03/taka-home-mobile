@@ -27,7 +27,16 @@ export default function ProfileScreen() {
       title: "Thông tin cá nhân",
       subtitle: "Cập nhật thông tin của bạn",
       onPress: () => {
-        // TODO: Navigate to personal info screen
+        router.push("/profile/personal-info");
+      },
+    },
+    {
+      id: "verify-face",
+      icon: "verified-user",
+      title: "Xác thực khuôn mặt",
+      subtitle: user?.CCCD ? "Đã xác thực ✓" : "Xác thực danh tính với CCCD",
+      onPress: () => {
+        router.push("/verify/face");
       },
     },
     {
@@ -97,9 +106,19 @@ export default function ProfileScreen() {
             )}
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>
-              {user?.fullName || "Người dùng"}
-            </Text>
+            <View style={styles.userNameContainer}>
+              <Text style={styles.userName}>
+                {user?.fullName || "Người dùng"}
+              </Text>
+              {user?.CCCD && (
+                <MaterialIcons
+                  name="verified"
+                  size={20}
+                  color="#4CAF50"
+                  style={styles.verifiedBadge}
+                />
+              )}
+            </View>
             <Text style={styles.userEmail}>{user?.email || ""}</Text>
             {user?.phone && (
               <Text style={styles.userPhone}>
@@ -207,11 +226,18 @@ const styles = StyleSheet.create({
   userInfo: {
     flex: 1,
   },
+  userNameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
   userName: {
     fontSize: 18,
     fontWeight: "700",
     color: "#1a1a1a",
-    marginBottom: 4,
+  },
+  verifiedBadge: {
+    marginLeft: 6,
   },
   userEmail: {
     fontSize: 14,
