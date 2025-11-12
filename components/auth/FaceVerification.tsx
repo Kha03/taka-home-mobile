@@ -108,7 +108,7 @@ export default function FaceVerification() {
         const { isMatch, similarity, isBothImgIDCard, cccdInfo } =
           response.data;
 
-        if (!isBothImgIDCard) {
+        if (!cccdInfo.id) {
           Alert.alert(
             "Lỗi xác thực",
             "Ảnh CCCD không hợp lệ. Vui lòng chụp lại ảnh CCCD rõ ràng."
@@ -370,8 +370,8 @@ const styles = StyleSheet.create({
     borderRadius: 125,
   },
   cccdFrame: {
-    width: 320,
-    height: 200,
+    width: 350,
+    height: 220,
     borderRadius: 20,
   },
   controls: {
