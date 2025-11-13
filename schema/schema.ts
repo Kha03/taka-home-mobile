@@ -31,8 +31,8 @@ export const VALIDATION_MESSAGES = {
   },
 };
 
-export const ListingKind = z.enum(["APARTMENT", "BOARDING"], {
-  error: BASE_REQUIRED,
+export const ListingKind = z.enum(["APARTMENT", "BOARDING", "HOUSING"], {
+  required_error: BASE_REQUIRED,
 });
 
 export const RoomTypeSchema = z.object({
@@ -98,8 +98,8 @@ export const FormSchema = z
   })
   .refine(
     (data) => {
-      // If APARTMENT, area and price are required
-      if (data.kind === "APARTMENT") {
+      // If APARTMENT or HOUSING, area and price are required
+      if (data.kind === "APARTMENT" || data.kind === "HOUSING") {
         return (
           data.area !== undefined &&
           data.area > 0 &&
@@ -110,7 +110,7 @@ export const FormSchema = z
       return true;
     },
     {
-      message: "Diện tích và giá thuê là bắt buộc cho Nhà ở/Chung cư",
+      message: "Diện tích và giá thuê là bắt buộc cho Nhà ở/Chung cư/Nhà riêng",
       path: ["area"],
     }
   );

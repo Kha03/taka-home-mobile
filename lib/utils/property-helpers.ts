@@ -95,8 +95,16 @@ export function getDisplayId(item: PropertyOrRoomType): string {
  */
 export function getPropertyType(
   item: PropertyOrRoomType
-): "apartment" | "boarding" {
-  return isRoomType(item) ? "boarding" : "apartment";
+): "apartment" | "boarding" | "housing" {
+  if (isRoomType(item)) {
+    return "boarding";
+  }
+  // Check if it's a HOUSING type property
+  const property = item as Property;
+  if (property.type === "HOUSING") {
+    return "housing";
+  }
+  return "apartment";
 }
 
 /**

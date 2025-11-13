@@ -234,11 +234,17 @@ export default function PropertiesScreen() {
             styles.typeBadge,
             propertyType === "boarding"
               ? styles.boardingBadge
+              : propertyType === "housing"
+              ? styles.housingBadge
               : styles.apartmentBadge,
           ]}
         >
           <Text style={styles.typeBadgeText}>
-            {propertyType === "boarding" ? "Nhà trọ" : "Chung cư"}
+            {propertyType === "boarding"
+              ? "Nhà trọ"
+              : propertyType === "housing"
+              ? "Nhà riêng"
+              : "Chung cư"}
           </Text>
         </View>
 
@@ -342,6 +348,25 @@ export default function PropertiesScreen() {
                 ]}
               >
                 Chung cư
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.filterOption,
+                filters.type === PropertyTypeEnum.HOUSING &&
+                  styles.filterOptionActive,
+              ]}
+              onPress={() =>
+                setFilters({ ...filters, type: PropertyTypeEnum.HOUSING })
+              }
+            >
+              <Text
+                style={[
+                  styles.filterOptionText,
+                  filters.type === "HOUSING" && styles.filterOptionTextActive,
+                ]}
+              >
+                Nhà riêng
               </Text>
             </TouchableOpacity>
           </View>
@@ -1052,6 +1077,9 @@ const styles = StyleSheet.create({
   },
   apartmentBadge: {
     backgroundColor: "#FF9800",
+  },
+  housingBadge: {
+    backgroundColor: "#2196F3",
   },
   typeBadgeText: {
     color: "#fff",

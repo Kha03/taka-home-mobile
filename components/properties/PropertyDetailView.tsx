@@ -205,7 +205,11 @@ export default function PropertyDetailView({
     const info: string[] = [];
 
     if (apt.block) info.push(`Tòa nhà: ${apt.block}`);
-    if (apt.floor) info.push(`Tầng: ${apt.floor}`);
+    // For HOUSING type, show "Số tầng" instead of "Tầng"
+    if (apt.floor) {
+      const floorLabel = apt.type === "HOUSING" ? "Số tầng" : "Tầng";
+      info.push(`${floorLabel}: ${apt.floor}`);
+    }
     if (apt.unit) info.push(`Căn hộ: ${apt.unit}`);
     if (apt.bedrooms) info.push(`Phòng ngủ: ${apt.bedrooms}`);
     if (apt.bathrooms) info.push(`Phòng tắm: ${apt.bathrooms}`);
@@ -593,7 +597,11 @@ export default function PropertyDetailView({
 
       {!isRoomTypeDetail(property) && (
         <View style={styles.contentSection}>
-          <Text style={styles.sectionTitle}>Thông tin căn hộ</Text>
+          <Text style={styles.sectionTitle}>
+            {(property as Property).type === "HOUSING"
+              ? "Thông tin nhà riêng"
+              : "Thông tin căn hộ"}
+          </Text>
           <View style={styles.unitInfo}>
             {getApartmentInfo().map((info: string, index: number) => (
               <Text key={index} style={styles.unitInfoText}>

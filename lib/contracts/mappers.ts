@@ -25,6 +25,14 @@ export const bookingToContract = (booking: Booking): ContractVM => {
     ? roomType?.furnishing || "Chưa có thông tin"
     : property.furnishing || "Chưa có thông tin";
 
+  // Determine category based on property type
+  let category = "Chung cư"; // Default
+  if (property.type === "BOARDING") {
+    category = "Nhà trọ";
+  } else if (property.type === "HOUSING") {
+    category = "Nhà riêng";
+  }
+
   let contractStatus: ContractVM["status"] = "pending_landlord";
 
   if (booking.status === "ACTIVE") contractStatus = "active";
@@ -61,7 +69,7 @@ export const bookingToContract = (booking: Booking): ContractVM => {
     address: `${property.address}, ${property.ward}, ${property.province}`,
     propertyCode,
     propertyType: furnishing,
-    category: property.type === "APARTMENT" ? "Chung cư" : "Nhà trọ",
+    category,
     price,
     deposit,
     status: contractStatus,

@@ -121,7 +121,7 @@ export class PropertyService {
 
   async uploadPropertyImages(
     propertyId: string,
-    entityType: "APARTMENT" | "BOARDING",
+    entityType: "APARTMENT" | "BOARDING" | "HOUSING",
     heroImage?: File,
     images?: File[]
   ): Promise<ApiResponse<Property>> {

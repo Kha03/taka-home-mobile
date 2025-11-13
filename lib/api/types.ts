@@ -49,6 +49,7 @@ export interface AddressData {
 export enum PropertyTypeEnum {
   APARTMENT = "APARTMENT",
   BOARDING = "BOARDING",
+  HOUSING = "HOUSING",
 }
 export interface PropertyRoom {
   id?: string;
