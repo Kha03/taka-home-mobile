@@ -20,6 +20,25 @@ export interface ApiError {
   data?: unknown;
 }
 
+// Event emitter for 401 unauthorized errors
+type UnauthorizedListener = () => void;
+class UnauthorizedEventEmitter {
+  private listeners: UnauthorizedListener[] = [];
+
+  subscribe(listener: UnauthorizedListener) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter((l) => l !== listener);
+    };
+  }
+
+  emit() {
+    this.listeners.forEach((listener) => listener());
+  }
+}
+
+export const unauthorizedEmitter = new UnauthorizedEventEmitter();
+
 class ApiClient {
   private axiosInstance: AxiosInstance;
 
@@ -83,7 +102,8 @@ class ApiClient {
           try {
             await AsyncStorage.removeItem("accessToken");
             await AsyncStorage.removeItem("user");
-            // Note: Navigation should be handled in auth-context, not here
+            // Emit event to notify auth context to logout
+            unauthorizedEmitter.emit();
           } catch (storageError) {
             console.error("Error clearing storage:", storageError);
           }

@@ -1,4 +1,5 @@
 import { authService, User } from "@/lib/api";
+import { unauthorizedEmitter } from "@/lib/api/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -47,6 +48,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
     checkAuth();
+
+    // Subscribe to unauthorized events (401)
+    const unsubscribe = unauthorizedEmitter.subscribe(() => {
+      setUser(null);
+      setIsLoading(false);
+      router.replace("/(auth)/signin");
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const afterAuthRedirect = () => {
